@@ -8,7 +8,6 @@ import (
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/user"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/constant"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/errorext"
-	"github.com/tanveerprottoy/backend-structure-go/pkg/response"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/timeext"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/util"
 )
@@ -54,21 +53,15 @@ func (s *service) Create(ctx context.Context, d user.CreateDTO) (user.User, erro
 	return e, nil
 }
 
-func (s *service) ReadMany(ctx context.Context, limit, page int, args ...any) (response.ReadManyResponse[user.User], error) {
-	res := response.ReadManyResponse[user.User]{
-		Items: make([]user.User, 0),
-		Limit: limit,
-		Page:  page,
-	}
+func (s *service) ReadMany(ctx context.Context, limit, page int, args ...any) ([]user.User, error) {
 	offset := util.CalculateOffset(limit, page)
 
 	d, err := s.repository.ReadMany(ctx, limit, offset, args...)
 	if err != nil {
-		return res, err
+		return d, errorext.BuildCustomError(err)
 	}
 
-	res.Items = d
-	return res, nil
+	return d, nil
 }
 
 func (s *service) ReadOne(ctx context.Context, id string) (user.User, error) {
@@ -92,7 +85,7 @@ func (s *service) Update(ctx context.Context, id string, d user.UpdateDTO) (user
 	e.SetAddress(d.Address)
 	rowCount, err := s.repository.Update(ctx, id, e)
 	if err != nil {
-		return e, err
+		return e, errorext.BuildCustomError(err)
 	}
 
 	if rowCount > 0 {
@@ -111,7 +104,7 @@ func (s *service) Delete(ctx context.Context, id string) (user.User, error) {
 	n := timeext.NowUnix()
 	rowCount, err := s.repository.Delete(ctx, id, n)
 	if err != nil {
-		return e, err
+		return e, errorext.BuildCustomError(err)
 	}
 
 	if rowCount > 0 {

@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/tanveerprottoy/backend-structure-go/internal/api/product"
-	"github.com/tanveerprottoy/backend-structure-go/internal/api/product/mock"
-	"github.com/tanveerprottoy/backend-structure-go/internal/api/product/service"
+	"github.com/tanveerprottoy/backend-structure-go/internal/api/user"
+	"github.com/tanveerprottoy/backend-structure-go/internal/api/user/mock"
+	"github.com/tanveerprottoy/backend-structure-go/internal/api/user/service"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/constant"
 )
 
@@ -25,33 +25,33 @@ func TestService(t *testing.T) {
 
 	// initiate the tests in sub tests
 	t.Run("create", func(t *testing.T) {
-		descrption := "description 1"
+		address := "address 1"
 
 		tests := [2]struct {
 			name     string
-			dto      product.CreateDTO
-			expected product.Product
+			dto      user.CreateDTO
+			expected user.User
 		}{
 			{
 				name: "success",
-				dto: product.CreateDTO{
-					Name:        "name 1",
-					Description: "description 1",
+				dto: user.CreateDTO{
+					Name:    "name 1",
+					Address: "address 1",
 				},
-				expected: product.Product{
-					Name:        "name 1",
-					Description: &descrption,
+				expected: user.User{
+					Name:    "name 1",
+					Address: &address,
 				},
 			},
 			{
 				name: "fail",
-				dto: product.CreateDTO{
-					Name:        "name 2",
-					Description: "description 2",
+				dto: user.CreateDTO{
+					Name:    "name 2",
+					Address: "address 2",
 				},
-				expected: product.Product{
-					Name:        "another name",
-					Description: &descrption,
+				expected: user.User{
+					Name:    "another name",
+					Address: &address,
 				},
 			},
 		}
@@ -144,35 +144,35 @@ func TestService(t *testing.T) {
 	})
 
 	t.Run("update", func(t *testing.T) {
-		descrption := "updated description 1"
+		address := "updated address 1"
 
 		tests := [2]struct {
 			name     string
-			dto      product.UpdateDTO
-			expected product.Product
+			dto      user.UpdateDTO
+			expected user.User
 		}{
 			{
 				name: "success",
-				dto: product.UpdateDTO{
-					Name:        "updated name 1",
-					Description: "updated description 1",
+				dto: user.UpdateDTO{
+					Name:    "updated name 1",
+					Address: "updated address 1",
 				},
-				expected: product.Product{
-					ID:          insertedIDs[0],
-					Name:        "updated name",
-					Description: &descrption,
+				expected: user.User{
+					ID:      insertedIDs[0],
+					Name:    "updated name",
+					Address: &address,
 				},
 			},
 			{
 				name: "fail",
-				dto: product.UpdateDTO{
-					Name:        "updated name 2",
-					Description: "updated description 2",
+				dto: user.UpdateDTO{
+					Name:    "updated name 2",
+					Address: "updated address 2",
 				},
-				expected: product.Product{
-					ID:          insertedIDs[1],
-					Name:        "another name",
-					Description: &descrption,
+				expected: user.User{
+					ID:      insertedIDs[1],
+					Name:    "another name",
+					Address: &address,
 				},
 			},
 		}
@@ -200,17 +200,17 @@ func TestService(t *testing.T) {
 
 		tests := [2]struct {
 			name     string
-			expected product.Product
+			expected user.User
 		}{
 			{
 				name: "success",
-				expected: product.Product{
+				expected: user.User{
 					ID: insertedIDs[0],
 				},
 			},
 			{
 				name: "fail",
-				expected: product.Product{
+				expected: user.User{
 					ID: insertedIDs[1],
 				},
 			},

@@ -1,5 +1,7 @@
 package dto
 
+import "github.com/tanveerprottoy/backend-structure-go/internal/api/product"
+
 type CreateProductDTO struct {
 	Name        string `json:"name" validate:"required"`
 	Description string `json:"description" validate:"omitempty"`
@@ -29,4 +31,25 @@ func NewProductEntityDTO(id, name string, description *string, isArchived bool, 
 		CreatedAt:   createdAt,
 		UpdatedAt:   updatedAt,
 	}
+}
+
+// helper function to convert to dto entity from domain entity
+func ToProductEntity(p product.Product) *ProductEntityDTO {
+	return NewProductEntityDTO(
+		p.ID,
+		p.Name,
+		p.Description,
+		p.IsArchived,
+		p.CreatedAt,
+		p.UpdatedAt,
+	)
+}
+
+// helper function to convert to dto entity slice from domain entity slice
+func ToProductEntities(products []product.Product) []ProductEntityDTO {
+	entityDTOs := make([]ProductEntityDTO, len(products))
+	for _, p := range products {
+		entityDTOs = append(entityDTOs, *ToProductEntity(p))
+	}
+	return entityDTOs
 }

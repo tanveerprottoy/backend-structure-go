@@ -23,12 +23,12 @@ func (s *MemoryStorage) Create(ctx context.Context, e user.User, args ...any) (s
 	return e.ID, nil
 }
 
-func (s MemoryStorage) ReadMany(ctx context.Context, limit int, offset int, args ...any) ([]user.User, int64, error) {
+func (s MemoryStorage) ReadMany(ctx context.Context, limit int, offset int, args ...any) ([]user.User, error) {
 	entities := make([]user.User, len(s.m))
 	for _, v := range s.m {
 		entities = append(entities, v)
 	}
-	return entities, int64(len(entities)), nil
+	return entities, nil
 }
 
 func (s MemoryStorage) ReadOne(ctx context.Context, id string, args ...any) (user.User, error) {

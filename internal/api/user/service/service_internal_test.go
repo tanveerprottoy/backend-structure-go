@@ -1,0 +1,80 @@
+package service
+
+import (
+	"context"
+	"testing"
+
+	"github.com/tanveerprottoy/backend-structure-go/internal/api/user"
+	"github.com/tanveerprottoy/backend-structure-go/internal/api/user/mock"
+	"github.com/tanveerprottoy/backend-structure-go/pkg/constant"
+)
+
+func TestService(t *testing.T) {
+	// create mock repo
+	r := mock.NewMemoryStorage()
+
+	s := NewService(r)
+
+	// cleanup
+	t.Cleanup(func() {
+		r.Clear()
+	})
+
+	// initiate the tests in sub tests
+	t.Run("readOneInternal", func(t *testing.T) {
+		var insertedIDs [2]string
+
+		dtos := []user.CreateDTO{
+			{
+				Name:    "name 1",
+				Address: "description 1",
+			},
+			{
+				Name:    "name 2",
+				Address: "description 2",
+			},
+		}
+
+		for i, dto := range dtos {
+			// insert item for test
+			e, err := s.Create(context.Background(), dto)
+			if err != nil {
+				t.Skip(err)
+			}
+			insertedIDs[i] = e.ID
+		}
+
+		if len(insertedIDs) == 0 {
+			t.Skip("no inserted id found, skipping test")
+		}
+
+		id := insertedIDs[0]
+
+		tests := [2]struct {
+			name     string
+			expected string
+		}{
+			{
+				name:     "success",
+				expected: id,
+			},
+			{
+				name:     "fail",
+				expected: constant.FakeUUID,
+			},
+		}
+
+		for _, test := range tests {
+			// run test in a sub test
+			t.Run(test.name, func(t *testing.T) {
+				e, err := s.ReadOne(context.Background(), id)
+				if err != nil {
+					t.Error(err)
+				}
+				if e.ID != test.expected {
+					t.Error("id is not equal")
+				}
+			})
+		}
+	})
+}

@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -60,17 +61,13 @@ func (h *Product) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// build the response payload
-	p := dto.NewProductEntityDTO(
-		d.ID,
-		d.Name,
-		d.Description,
-		d.IsArchived,
-		d.CreatedAt,
-		d.UpdatedAt,
-	)
+	// convert to dto entity
+	p := dto.ToProductEntity(d)
 
-	response.Respond(w, http.StatusCreated, response.BuildData(&p))
+	_, err = response.Respond(w, http.StatusCreated, response.BuildData(p))
+	if err != nil {
+		log.Printf("response.Respond returned error: %v", err)
+	}
 }
 
 func (h *Product) ReadMany(w http.ResponseWriter, r *http.Request) {
@@ -110,7 +107,19 @@ func (h *Product) ReadMany(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Respond(w, http.StatusOK, response.BuildData(d))
+	// convert to dto entities
+	i := dto.ToProductEntities(d)
+
+	res := response.ReadManyResponse[dto.ProductEntityDTO]{
+		Items: i,
+		Limit: limit,
+		Page:  page,
+	}
+
+	_, err = response.Respond(w, http.StatusOK, response.BuildData(&res))
+	if err != nil {
+		log.Printf("response.Respond returned error: %v", err)
+	}
 }
 
 func (h *Product) ReadOne(w http.ResponseWriter, r *http.Request) {
@@ -127,7 +136,13 @@ func (h *Product) ReadOne(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Respond(w, http.StatusOK, response.BuildData(d))
+	// convert to dto entity
+	p := dto.ToProductEntity(d)
+
+	_, err = response.Respond(w, http.StatusOK, response.BuildData(p))
+	if err != nil {
+		log.Printf("response.Respond returned error: %v", err)
+	}
 }
 
 func (h *Product) Update(w http.ResponseWriter, r *http.Request) {
@@ -168,7 +183,13 @@ func (h *Product) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Respond(w, http.StatusOK, response.BuildData(d))
+	// convert to dto entity
+	p := dto.ToProductEntity(d)
+
+	_, err = response.Respond(w, http.StatusOK, response.BuildData(p))
+	if err != nil {
+		log.Printf("response.Respond returned error: %v", err)
+	}
 }
 
 func (h *Product) Delete(w http.ResponseWriter, r *http.Request) {
@@ -185,5 +206,11 @@ func (h *Product) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Respond(w, http.StatusOK, response.BuildData(d))
+	// convert to dto entity
+	p := dto.ToProductEntity(d)
+
+	_, err = response.Respond(w, http.StatusOK, response.BuildData(p))
+	if err != nil {
+		log.Printf("response.Respond returned error: %v", err)
+	}
 }

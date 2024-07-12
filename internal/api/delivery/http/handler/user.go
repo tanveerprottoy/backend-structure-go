@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -36,7 +37,7 @@ func (h *User) Create(w http.ResponseWriter, r *http.Request) {
 		response.RespondError(w, http.StatusBadRequest, response.BuildError(err))
 		return
 	}
-	
+
 	// validate the request body
 	validationErrs := h.validater.Validate(&v)
 	if validationErrs != nil {
@@ -57,7 +58,13 @@ func (h *User) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Respond(w, http.StatusCreated, response.BuildData(d))
+	// convert to dto entity
+	p := dto.ToUserEntity(d)
+
+	_, err = response.Respond(w, http.StatusCreated, response.BuildData(p))
+	if err != nil {
+		log.Printf("response.Respond returned error: %v", err)
+	}
 }
 
 func (h *User) ReadMany(w http.ResponseWriter, r *http.Request) {
@@ -96,7 +103,19 @@ func (h *User) ReadMany(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Respond(w, http.StatusOK, response.BuildData(d))
+	// convert to dto entities
+	i := dto.ToUserEntities(d)
+
+	res := response.ReadManyResponse[dto.UserEntityDTO]{
+		Items: i,
+		Limit: limit,
+		Page:  page,
+	}
+
+	_, err = response.Respond(w, http.StatusOK, response.BuildData(&res))
+	if err != nil {
+		log.Printf("response.Respond returned error: %v", err)
+	}
 }
 
 func (h *User) ReadOne(w http.ResponseWriter, r *http.Request) {
@@ -113,7 +132,13 @@ func (h *User) ReadOne(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Respond(w, http.StatusOK, response.BuildData(d))
+	// convert to dto entity
+	p := dto.ToUserEntity(d)
+
+	_, err = response.Respond(w, http.StatusOK, response.BuildData(p))
+	if err != nil {
+		log.Printf("response.Respond returned error: %v", err)
+	}
 }
 
 func (h *User) Update(w http.ResponseWriter, r *http.Request) {
@@ -132,7 +157,7 @@ func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 		response.RespondError(w, http.StatusBadRequest, response.BuildError(err))
 		return
 	}
-	
+
 	// validate the request body
 	validationErrs := h.validater.Validate(&v)
 	if validationErrs != nil {
@@ -154,7 +179,13 @@ func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Respond(w, http.StatusOK, response.BuildData(d))
+	// convert to dto entity
+	p := dto.ToUserEntity(d)
+
+	_, err = response.Respond(w, http.StatusOK, response.BuildData(p))
+	if err != nil {
+		log.Printf("response.Respond returned error: %v", err)
+	}
 }
 
 func (h *User) Delete(w http.ResponseWriter, r *http.Request) {
@@ -171,5 +202,11 @@ func (h *User) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Respond(w, http.StatusOK, response.BuildData(d))
+	// convert to dto entity
+	p := dto.ToUserEntity(d)
+
+	_, err = response.Respond(w, http.StatusOK, response.BuildData(p))
+	if err != nil {
+		log.Printf("response.Respond returned error: %v", err)
+	}
 }
