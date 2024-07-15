@@ -9,7 +9,8 @@ import (
 )
 
 type Server struct {
-	httpServer      *http.Server
+	httpServer *http.Server
+	// empty struct consumes zero memory
 	idleConnsClosed chan struct{}
 }
 
@@ -22,8 +23,6 @@ func NewServer(address string, handler http.Handler, opts ...any) *Server {
 			/* ReadTimeout:       constant.ServerReadTimeout * time.Second,
 			ReadHeaderTimeout: constant.ServerReadHeaderTimeout * time.Second,
 			WriteTimeout:      constant.ServerWriteTimeout * time.Second,
-			// disable http2
-			TLSNextProto: make(map[string]func(*http.Server, *tls.Conn, http.Handler)),
 			*/
 		},
 	}
