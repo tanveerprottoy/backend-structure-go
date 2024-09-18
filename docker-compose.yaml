@@ -3,8 +3,18 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile.kube
-    image: be-service
-    container_name: be-service
-    env_file: .env
     ports:
       - "8080:8080"
+    image: be-service
+    container_name: be-service
+    environment:
+    - PORT=
+    - APP_ENV=
+    - DB_HOST=
+    - DB_PORT=
+    - DB_USERNAME=
+    - DB_PASS=
+    - DB_NAME=
+    - DB_SSL_MODE=
+    - ALLOWED_ORIGIN=
+    env_file: .env
