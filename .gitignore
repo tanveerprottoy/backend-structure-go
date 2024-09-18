@@ -32,6 +32,7 @@ go.work
 .history/
 
 # keep env examples
+!example.env
 !dev.env
 !prod.env
 

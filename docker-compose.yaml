@@ -1,0 +1,10 @@
+services:
+  be_service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.kube
+    image: be-service
+    container_name: be-service
+    env_file: .env
+    ports:
+      - "8080:8080"
