@@ -1,8 +1,6 @@
 package api
 
 import (
-	"os"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/delivery/http/handler"
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/delivery/http/route"
@@ -37,13 +35,22 @@ func (c *Config) loadEnv() {
 
 // initDB initializes DB client
 func (c *Config) initDB() {
-	opts := sqlext.Options{
+	/* opts := sqlext.Options{
 		Host:     os.Getenv("DB_HOST"),
 		Port:     os.Getenv("DB_PORT"),
 		Username: os.Getenv("DB_USERNAME"),
 		Password: os.Getenv("DB_PASS"),
 		DBName:   os.Getenv("DB_NAME"),
 		SSLMode:  os.Getenv("DB_SSL_MODE"),
+	} */
+	// temp
+	opts := sqlext.Options{
+		Host:     "192.168.31.40",
+		Port:     "5432",
+		Username: "postgres",
+		Password: "postgres",
+		DBName:   "dummy_ecommerce_db",
+		SSLMode:  "disable",
 	}
 	c.DBClient = sqlext.GetInstance(opts)
 }

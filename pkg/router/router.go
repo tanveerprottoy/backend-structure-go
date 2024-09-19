@@ -2,7 +2,6 @@ package router
 
 import (
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/tanveerprottoy/backend-structure-go/pkg/constant"
@@ -36,7 +35,8 @@ func (r *Router) registerGlobalMiddlewares() {
 		middlewarext.TimeoutHandler(constant.RequestTimeout*time.Second),
 		cors.Handler(cors.Options{
 			// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
-			AllowedOrigins: []string{os.Getenv("ALLOWED_ORIGIN")},
+			AllowedOrigins: []string{"*"},
+			// AllowedOrigins: []string{os.Getenv("ALLOWED_ORIGIN")},
 			// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
 			AllowedMethods: constant.AllowedMethods,
 			// AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},

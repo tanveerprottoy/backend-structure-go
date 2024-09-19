@@ -2,7 +2,7 @@ services:
   be_service:
     build:
       context: .
-      dockerfile: ./Dockerfile.kube
+      dockerfile: ./Dockerfile
     ports:
       - "8080:8080"
     image: be-service

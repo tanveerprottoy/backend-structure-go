@@ -23,4 +23,4 @@ EXPOSE 8080
 # needed for distroless base
 USER nonroot:nonroot
 
-CMD ./app
+ENTRYPOINT [ "./app" ]
