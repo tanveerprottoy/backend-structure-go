@@ -45,7 +45,7 @@ func (c *Config) initDB() {
 	} */
 	// temp
 	opts := sqlext.Options{
-		Host:     "192.168.1.13",
+		Host:     "192.168.1.4",
 		Port:     "5432",
 		Username: "postgres",
 		Password: "postgres",
