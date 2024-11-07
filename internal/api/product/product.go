@@ -11,7 +11,7 @@ type Product struct {
 	UpdatedAt   int64
 }
 
-func NewProduct(id, name string, description string, createdAt, updatedAt int64) *Product {
+func NewProduct(id, name, description string, createdAt, updatedAt int64) *Product {
 	p := &Product{
 		ID:        id,
 		Name:      name,

@@ -11,7 +11,7 @@ type User struct {
 	UpdatedAt  int64
 }
 
-func NewUser(id, name string, address string, createdAt, updatedAt int64) *User {
+func NewUser(id, name, address string, createdAt, updatedAt int64) *User {
 	p := &User{
 		ID:        id,
 		Name:      name,
