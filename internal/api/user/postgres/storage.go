@@ -26,13 +26,13 @@ func (s *storage) Create(ctx context.Context, e user.User, args ...any) (string,
 	var lastID string
 
 	// convert domain product entity to postgres specific entity
-	userEntity := newUserEntity(e.Name, e.Address, e.CreatedAt, e.UpdatedAt)
+	entity := newUserEntity(e.Name, e.Address, e.CreatedAt, e.UpdatedAt)
 
 	// build insert query
 	q := sqlext.BuildInsertQuery(tableName, []string{"name", "address", "created_at", "updated_at"}, "RETURNING id")
 
 	// execute the query
-	row := s.db.QueryRowContext(ctx, q, userEntity.Name, userEntity.Address, userEntity.CreatedAt, userEntity.UpdatedAt)
+	row := s.db.QueryRowContext(ctx, q, entity.name, entity.address, entity.createdAt, entity.updatedAt)
 	err := row.Err()
 	if err != nil {
 		log.Printf("err: %v", err)
@@ -74,15 +74,15 @@ func (s *storage) ReadMany(ctx context.Context, limit, offset int, args ...any) 
 	defer rows.Close()
 
 	// scan the rows
-	userEntity := &userEntity{}
-	users, err := userEntity.scanRows(rows)
+	entity := &userEntity{}
+	users, err := entity.scanRows(rows)
 	if err != nil {
 		return d, err
 	}
 
 	// convert postgres entity to domain entity
 	for _, u := range users {
-		e := user.NewUser(u.ID, u.Name, u.Address.String, u.CreatedAt, u.UpdatedAt)
+		e := user.NewUser(u.id, u.name, u.address.String, u.createdAt, u.updatedAt)
 		d = append(d, *e)
 	}
 
@@ -99,25 +99,25 @@ func (s *storage) ReadOne(ctx context.Context, id string, args ...any) (user.Use
 		return user.User{}, err
 	}
 
-	userEntity := &userEntity{}
-	err = userEntity.scanRow(row)
+	entity := &userEntity{}
+	err = entity.scanRow(row)
 	if err != nil {
 		return user.User{}, err
 	}
 
 	// convert postgres entity to domain entity
-	e := user.NewUser(userEntity.ID, userEntity.Name, userEntity.Address.String, userEntity.CreatedAt, userEntity.UpdatedAt)
+	e := user.NewUser(entity.id, entity.name, entity.address.String, entity.createdAt, entity.updatedAt)
 
 	return *e, nil
 }
 
 func (s *storage) Update(ctx context.Context, id string, e user.User, args ...any) (int64, error) {
 	// convert domain product entity to postgres specific entity
-	userEntity := newUserEntity(e.Name, e.Address, e.CreatedAt, e.UpdatedAt)
+	entity := newUserEntity(e.Name, e.Address, e.CreatedAt, e.UpdatedAt)
 
 	q := sqlext.BuildUpdateQuery(tableName, []string{"name", "description", "updated_at"}, []string{"id"}, "")
 
-	res, err := s.db.ExecContext(ctx, q, userEntity.Name, userEntity.Address, userEntity.UpdatedAt, id)
+	res, err := s.db.ExecContext(ctx, q, entity.name, entity.address, entity.updatedAt, id)
 	if err != nil {
 		err := errorext.BuildDBError(err)
 		return -1, err

@@ -26,13 +26,13 @@ func (s *storage) Create(ctx context.Context, e product.Product, args ...any) (s
 	var lastID string
 
 	// convert domain product entity to postgres specific entity
-	productEntity := newProductEntity(e.Name, e.Description, e.CreatedAt, e.UpdatedAt)
+	entity := newProductEntity(e.Name, e.Description, e.CreatedAt, e.UpdatedAt)
 
 	// build insert query
 	q := sqlext.BuildInsertQuery(tableName, []string{"name", "description", "created_at", "updated_at"}, "RETURNING id")
 
 	// execute the query
-	row := s.db.QueryRowContext(ctx, q, productEntity.Name, productEntity.Description, productEntity.CreatedAt, productEntity.UpdatedAt)
+	row := s.db.QueryRowContext(ctx, q, entity.name, entity.description, entity.createdAt, entity.updatedAt)
 	err := row.Err()
 	if err != nil {
 		log.Printf("err: %v", err)
@@ -74,15 +74,15 @@ func (s *storage) ReadMany(ctx context.Context, limit, offset int, args ...any) 
 	defer rows.Close()
 
 	// scan the rows
-	productEntity := &productEntity{}
-	products, err := productEntity.scanRows(rows)
+	entity := &productEntity{}
+	products, err := entity.scanRows(rows)
 	if err != nil {
 		return d, err
 	}
 
 	// convert postgres entity to domain entity
 	for _, p := range products {
-		e := product.NewProduct(p.ID, p.Name, p.Description.String, p.CreatedAt, p.UpdatedAt)
+		e := product.NewProduct(p.id, p.name, p.description.String, p.createdAt, p.updatedAt)
 		d = append(d, *e)
 	}
 
@@ -99,25 +99,25 @@ func (s *storage) ReadOne(ctx context.Context, id string, args ...any) (product.
 		return product.Product{}, err
 	}
 
-	productEntity := &productEntity{}
-	err = productEntity.scanRow(row)
+	entity := &productEntity{}
+	err = entity.scanRow(row)
 	if err != nil {
 		return product.Product{}, err
 	}
 
 	// convert postgres entity to domain entity
-	e := product.NewProduct(productEntity.ID, productEntity.Name, productEntity.Description.String, productEntity.CreatedAt, productEntity.UpdatedAt)
+	e := product.NewProduct(entity.id, entity.name, entity.description.String, entity.createdAt, entity.updatedAt)
 
 	return *e, nil
 }
 
 func (s *storage) Update(ctx context.Context, id string, e product.Product, args ...any) (int64, error) {
 	// convert domain product entity to postgres specific entity
-	productEntity := newProductEntity(e.Name, e.Description, e.CreatedAt, e.UpdatedAt)
+	entity := newProductEntity(e.Name, e.Description, e.CreatedAt, e.UpdatedAt)
 
 	q := sqlext.BuildUpdateQuery(tableName, []string{"name", "description", "updated_at"}, []string{"id"}, "")
 
-	res, err := s.db.ExecContext(ctx, q, productEntity.Name, productEntity.Description, productEntity.UpdatedAt, id)
+	res, err := s.db.ExecContext(ctx, q, entity.name, entity.description, entity.updatedAt, id)
 	if err != nil {
 		err := errorext.BuildDBError(err)
 		return -1, err
