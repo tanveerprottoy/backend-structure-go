@@ -151,7 +151,7 @@ func (j *JsonObject) Scan(val any) error {
 // JsonArray is a type for DB json array type
 type JsonArray []map[string]any
 
-// Scan implements the Scanner interface for Point
+// Scan implements the Scanner interface for JsonArray
 func (j *JsonArray) Scan(val any) error {
 	var jsonData []map[string]any
 	switch v := val.(type) {
