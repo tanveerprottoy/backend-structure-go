@@ -141,7 +141,7 @@ func (j *JsonArray) Scan(val any) error {
 		*j = jsonData
 		return nil
 	}
-	return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type *UInt", val)
+	return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type []map[string]any", val)
 }
 
 // JsonObject is a type for DB json array type
@@ -163,5 +163,5 @@ func (j *JsonObject) Scan(val any) error {
 		*j = jsonObj
 		return nil
 	}
-	return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type *UInt", val)
+	return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type map[string]any", val)
 }
