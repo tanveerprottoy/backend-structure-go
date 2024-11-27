@@ -126,24 +126,6 @@ func (n *NullBool) UnmarshalJSON(bytes []byte) error {
 	return nil
 }
 
-// JsonArray is a type for DB json array type
-type JsonArray []map[string]any
-
-// Scan implements the Scanner interface for Point
-func (j *JsonArray) Scan(val any) error {
-	var jsonData []map[string]any
-	switch v := val.(type) {
-	case []byte:
-		err := json.Unmarshal(v, &jsonData)
-		if err != nil {
-			return err
-		}
-		*j = jsonData
-		return nil
-	}
-	return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type []map[string]any", val)
-}
-
 // JsonObject is a type for DB json array type
 type JsonObject map[string]any
 
@@ -164,4 +146,22 @@ func (j *JsonObject) Scan(val any) error {
 		return nil
 	}
 	return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type map[string]any", val)
+}
+
+// JsonArray is a type for DB json array type
+type JsonArray []map[string]any
+
+// Scan implements the Scanner interface for Point
+func (j *JsonArray) Scan(val any) error {
+	var jsonData []map[string]any
+	switch v := val.(type) {
+	case []byte:
+		err := json.Unmarshal(v, &jsonData)
+		if err != nil {
+			return err
+		}
+		*j = jsonData
+		return nil
+	}
+	return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type []map[string]any", val)
 }
