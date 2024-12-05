@@ -32,7 +32,7 @@ func NewProduct(u product.UseCase, v validatorext.Validater) *Product {
 
 // Create handles entity create post request
 func (h *Product) Create(w http.ResponseWriter, r *http.Request) {
-	var v dto.CreateProductDTO
+	var v dto.CreateProduct
 	// parse the request body
 	defer r.Body.Close()
 	err := httpext.ParseRequestBody(r.Body, &v)
@@ -110,7 +110,7 @@ func (h *Product) ReadMany(w http.ResponseWriter, r *http.Request) {
 	// convert to dto entities
 	i := dto.ToProductEntities(d)
 
-	res := response.ReadManyResponse[dto.ProductEntityDTO]{
+	res := response.ReadManyResponse[dto.ProductEntity]{
 		Items: i,
 		Limit: limit,
 		Page:  page,
@@ -155,7 +155,7 @@ func (h *Product) Update(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	// parse the request body
-	var v dto.UpdateProductDTO
+	var v dto.UpdateProduct
 	err := httpext.ParseRequestBody(r.Body, &v)
 	if err != nil {
 		response.RespondError(w, http.StatusBadRequest, response.BuildError(err))

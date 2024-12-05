@@ -29,7 +29,7 @@ func NewUser(u user.UseCase, v validatorext.Validater) *User {
 
 // Create handles entity create post request
 func (h *User) Create(w http.ResponseWriter, r *http.Request) {
-	var v dto.CreateUserDTO
+	var v dto.CreateUser
 	// parse the request body
 	defer r.Body.Close()
 	err := httpext.ParseRequestBody(r.Body, &v)
@@ -106,7 +106,7 @@ func (h *User) ReadMany(w http.ResponseWriter, r *http.Request) {
 	// convert to dto entities
 	i := dto.ToUserEntities(d)
 
-	res := response.ReadManyResponse[dto.UserEntityDTO]{
+	res := response.ReadManyResponse[dto.UserEntity]{
 		Items: i,
 		Limit: limit,
 		Page:  page,
@@ -151,7 +151,7 @@ func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	// parse the request body
-	var v dto.UpdateUserDTO
+	var v dto.UpdateUser
 	err := httpext.ParseRequestBody(r.Body, &v)
 	if err != nil {
 		response.RespondError(w, http.StatusBadRequest, response.BuildError(err))
