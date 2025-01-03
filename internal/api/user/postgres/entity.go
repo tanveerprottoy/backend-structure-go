@@ -5,22 +5,24 @@ import (
 	"log"
 
 	"github.com/tanveerprottoy/backend-structure-go/pkg/errorext"
-	"github.com/tanveerprottoy/backend-structure-go/pkg/sqlext"
 )
 
 // a package private entity clone of the domain entity
 // this type can have db specific data types like here
 // it's sqlext.NullString
 type userEntity struct {
-	id         string            `db:"id"`
-	name       string            `db:"name"`
-	address    sqlext.NullString `db:"address"`
-	isArchived bool              `db:"is_archived"`
-	createdAt  int64             `db:"created_at"`
-	updatedAt  int64             `db:"updated_at"`
+	id         string         `db:"id"`
+	name       string         `db:"name"`
+	address    sql.NullString `db:"address"`
+	isArchived bool           `db:"is_archived"`
+	createdAt  int64          `db:"created_at"`
+	updatedAt  int64          `db:"updated_at"`
 }
 
+// this will be used to create db entity from domain entity
 func newUserEntity(name string, address *string, createdAt, updatedAt int64) *userEntity {
+	// address can be nil in db
+	// check for nil
 	e := userEntity{
 		name:      name,
 		createdAt: createdAt,
@@ -28,7 +30,7 @@ func newUserEntity(name string, address *string, createdAt, updatedAt int64) *us
 	}
 
 	if address != nil {
-		e.address = sqlext.MakeNullString(*address, true)
+		e.address = sql.NullString{String: *address, Valid: true}
 	}
 
 	return &e
