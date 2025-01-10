@@ -12,8 +12,8 @@ type Response[T any] struct {
 	Data T `json:"data"`
 }
 
-func MakeResponse[T any](payload T) Response[T] {
-	return Response[T]{Data: payload}
+func NewResponse[T any](payload T) *Response[T] {
+	return &Response[T]{Data: payload}
 }
 
 type ReadManyResponse[T any] struct {
@@ -45,14 +45,14 @@ type ErrorResponse struct {
 	Errors []Error `json:"errors"`
 }
 
-func MakeErrorResponse(typ typesext.ErrorType, errors []error) ErrorResponse {
+func NewErrorResponse(typ typesext.ErrorType, errors []error) *ErrorResponse {
 	switch typ {
 	case constant.ErrorSingle:
-		return ErrorResponse{Errors: []Error{makeError(errors[0].Error())}}
+		return &ErrorResponse{Errors: []Error{makeError(errors[0].Error())}}
 	case constant.ErrorMultiple:
-		return ErrorResponse{Errors: buildMultipleErrors(errors)}
+		return &ErrorResponse{Errors: buildMultipleErrors(errors)}
 	default:
-		return ErrorResponse{Errors: []Error{makeError(constant.InternalServerError)}}
+		return &ErrorResponse{Errors: []Error{makeError(constant.InternalServerError)}}
 	}
 }
 

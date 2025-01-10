@@ -2,6 +2,7 @@ package errorext
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -36,6 +37,7 @@ func BuildCustomError(err error) error {
 	if ok {
 		return &customErr
 	}
+	
 	// return custom error with code
 	return NewCustomError(http.StatusInternalServerError, err)
 }
@@ -46,8 +48,17 @@ func ParseCustomError(err error) *CustomError {
 	if ok {
 		return &customErr
 	}
+
 	// return custom error with code
 	return NewCustomError(http.StatusInternalServerError, err)
+}
+
+func ParseJSONError(err error) error {
+	if err, ok := err.(*json.UnmarshalTypeError); ok {
+		return errors.New("invalid type for " + err.Field)
+	}
+
+	return errors.New(constant.InvalidRequestBody)
 }
 
 func BuildDBError(err error) error {

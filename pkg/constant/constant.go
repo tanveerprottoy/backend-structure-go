@@ -29,6 +29,7 @@ const NotFound = "not found"
 const GenericFailMessage = "failed to perform the operation"
 const InvalidQueryParam = "the query parameter supplied is invalid"
 const MissingRequiredPathParam = "missing required path parameter id"
+const InvalidRequestBody = "the request body is invalid"
 
 const RequestTimeoutMsg string = "request timed out"
 
