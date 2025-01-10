@@ -34,14 +34,14 @@ func (h *User) Create(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	err := httpext.ParseRequestBody(r.Body, &v)
 	if err != nil {
-		response.RespondError(w, http.StatusBadRequest, response.BuildError(err))
+		response.RespondError(w, http.StatusBadRequest, response.MakeErrorResponse(constant.ErrorSingle, []error{err}))
 		return
 	}
 
 	// validate the request body
-	validationErrs := h.validater.Validate(&v)
-	if validationErrs != nil {
-		response.RespondError(w, http.StatusBadRequest, response.BuildError(validationErrs))
+	errors := h.validater.Validate(&v)
+	if errors != nil {
+		response.RespondError(w, http.StatusBadRequest, response.MakeErrorResponse(constant.ErrorMultiple, errors))
 		return
 	}
 
@@ -61,7 +61,7 @@ func (h *User) Create(w http.ResponseWriter, r *http.Request) {
 	// convert to dto entity
 	p := dto.ToUserEntity(d)
 
-	_, err = response.Respond(w, http.StatusCreated, response.BuildData(p))
+	_, err = response.Respond(w, http.StatusCreated, response.MakeResponse(p))
 	if err != nil {
 		log.Printf("response.Respond returned error: %v", err)
 	}
@@ -76,7 +76,7 @@ func (h *User) ReadMany(w http.ResponseWriter, r *http.Request) {
 	if limitStr != "" {
 		limit, err = strconv.Atoi(limitStr)
 		if err != nil {
-			response.RespondError(w, http.StatusBadRequest, response.BuildError(fmt.Errorf(constant.InvalidQueryParam+": %s", limitStr)))
+			response.RespondError(w, http.StatusBadRequest, response.MakeErrorResponse(constant.ErrorSingle, []error{fmt.Errorf("%s: %s", constant.InvalidQueryParam, limitStr)}))
 			return
 		}
 	}
@@ -85,7 +85,7 @@ func (h *User) ReadMany(w http.ResponseWriter, r *http.Request) {
 	if pageStr != "" {
 		page, err = strconv.Atoi(pageStr)
 		if err != nil {
-			response.RespondError(w, http.StatusBadRequest, response.BuildError(fmt.Errorf(constant.InvalidQueryParam+": %s", pageStr)))
+			response.RespondError(w, http.StatusBadRequest, response.MakeErrorResponse(constant.ErrorSingle, []error{fmt.Errorf("%s: %s", constant.InvalidQueryParam, pageStr)}))
 			return
 		}
 	}
@@ -112,7 +112,7 @@ func (h *User) ReadMany(w http.ResponseWriter, r *http.Request) {
 		Page:  page,
 	}
 
-	_, err = response.Respond(w, http.StatusOK, response.BuildData(&res))
+	_, err = response.Respond(w, http.StatusOK, response.MakeResponse(&res))
 	if err != nil {
 		log.Printf("response.Respond returned error: %v", err)
 	}
@@ -121,7 +121,7 @@ func (h *User) ReadMany(w http.ResponseWriter, r *http.Request) {
 func (h *User) ReadOne(w http.ResponseWriter, r *http.Request) {
 	id := httpext.GetURLParam(r, constant.ParamId)
 	if id == "" {
-		response.RespondError(w, http.StatusBadRequest, response.BuildError(errors.New(constant.MissingRequiredPathParam)))
+		response.RespondError(w, http.StatusBadRequest, response.MakeErrorResponse(constant.ErrorSingle, []error{errors.New(constant.MissingRequiredPathParam)}))
 		return
 	}
 
@@ -135,7 +135,7 @@ func (h *User) ReadOne(w http.ResponseWriter, r *http.Request) {
 	// convert to dto entity
 	p := dto.ToUserEntity(d)
 
-	_, err = response.Respond(w, http.StatusOK, response.BuildData(p))
+	_, err = response.Respond(w, http.StatusOK, response.MakeResponse(p))
 	if err != nil {
 		log.Printf("response.Respond returned error: %v", err)
 	}
@@ -144,7 +144,7 @@ func (h *User) ReadOne(w http.ResponseWriter, r *http.Request) {
 func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 	id := httpext.GetURLParam(r, constant.ParamId)
 	if id == "" {
-		response.RespondError(w, http.StatusBadRequest, response.BuildError(errors.New(constant.ApiPattern)))
+		response.RespondError(w, http.StatusBadRequest, response.MakeErrorResponse(constant.ErrorSingle, []error{errors.New(constant.ApiPattern)}))
 		return
 	}
 
@@ -154,14 +154,14 @@ func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 	var v dto.UpdateUser
 	err := httpext.ParseRequestBody(r.Body, &v)
 	if err != nil {
-		response.RespondError(w, http.StatusBadRequest, response.BuildError(err))
+		response.RespondError(w, http.StatusBadRequest, response.MakeErrorResponse(constant.ErrorSingle, []error{err}))
 		return
 	}
 
 	// validate the request body
-	validationErrs := h.validater.Validate(&v)
-	if validationErrs != nil {
-		response.RespondError(w, http.StatusBadRequest, response.BuildError(validationErrs))
+	errors := h.validater.Validate(&v)
+	if errors != nil {
+		response.RespondError(w, http.StatusBadRequest, response.MakeErrorResponse(constant.ErrorMultiple, errors))
 		return
 	}
 
@@ -182,7 +182,7 @@ func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 	// convert to dto entity
 	p := dto.ToUserEntity(d)
 
-	_, err = response.Respond(w, http.StatusOK, response.BuildData(p))
+	_, err = response.Respond(w, http.StatusOK, response.MakeResponse(p))
 	if err != nil {
 		log.Printf("response.Respond returned error: %v", err)
 	}
@@ -191,7 +191,7 @@ func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 func (h *User) Delete(w http.ResponseWriter, r *http.Request) {
 	id := httpext.GetURLParam(r, constant.ParamId)
 	if id == "" {
-		response.RespondError(w, http.StatusBadRequest, response.BuildError(errors.New(constant.MissingRequiredPathParam)))
+		response.RespondError(w, http.StatusBadRequest, response.MakeErrorResponse(constant.ErrorSingle, []error{errors.New(constant.MissingRequiredPathParam)}))
 		return
 	}
 
@@ -205,7 +205,7 @@ func (h *User) Delete(w http.ResponseWriter, r *http.Request) {
 	// convert to dto entity
 	p := dto.ToUserEntity(d)
 
-	_, err = response.Respond(w, http.StatusOK, response.BuildData(p))
+	_, err = response.Respond(w, http.StatusOK, response.MakeResponse(p))
 	if err != nil {
 		log.Printf("response.Respond returned error: %v", err)
 	}

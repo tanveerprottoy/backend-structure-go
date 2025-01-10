@@ -12,6 +12,10 @@ func NewCustomError(code int, err error) *CustomError {
 	return &CustomError{code: code, err: err}
 }
 
+func MakeCustomError(code int, err error) CustomError {
+	return CustomError{code: code, err: err}
+}
+
 func (e CustomError) Error() string {
 	return e.err.Error()
 }

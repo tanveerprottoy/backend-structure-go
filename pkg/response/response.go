@@ -5,10 +5,15 @@ import (
 	"net/http"
 
 	"github.com/tanveerprottoy/backend-structure-go/pkg/constant"
+	"github.com/tanveerprottoy/backend-structure-go/pkg/typesext"
 )
 
 type Response[T any] struct {
 	Data T `json:"data"`
+}
+
+func MakeResponse[T any](payload T) Response[T] {
+	return Response[T]{Data: payload}
 }
 
 type ReadManyResponse[T any] struct {
@@ -18,38 +23,59 @@ type ReadManyResponse[T any] struct {
 }
 
 type Error struct {
-	Name    string `json:"name"`
 	Message string `json:"message"`
 }
 
+func makeError(message string) Error {
+	return Error{Message: message}
+}
+
+// helper function to build multiple errors
+// used by MakeMultiErrorResponse
+func buildMultipleErrors(errors []error) []Error {
+	var errs []Error
+	for _, err := range errors {
+		errs = append(errs, makeError(err.Error()))
+	}
+
+	return errs
+}
+
 type ErrorResponse struct {
-	Errors any `json:"errors"`
+	Errors []Error `json:"errors"`
 }
 
-func BuildData[T any](payload T) Response[T] {
-	return Response[T]{Data: payload}
-}
-
-func BuildError(errors any) ErrorResponse {
-	return ErrorResponse{Errors: []any{errors}}
+func MakeErrorResponse(typ typesext.ErrorType, errors []error) ErrorResponse {
+	switch typ {
+	case constant.ErrorSingle:
+		return ErrorResponse{Errors: []Error{makeError(errors[0].Error())}}
+	case constant.ErrorMultiple:
+		return ErrorResponse{Errors: buildMultipleErrors(errors)}
+	default:
+		return ErrorResponse{Errors: []Error{makeError(constant.InternalServerError)}}
+	}
 }
 
 func RespondError(w http.ResponseWriter, code int, payload any) (int, error) {
 	w.WriteHeader(code)
+
 	res, errs := json.Marshal(payload)
 	if errs != nil {
 		// log failed to marshal
 		return w.Write([]byte(constant.InternalServerError))
 	}
+
 	return w.Write(res)
 }
 
 func Respond(w http.ResponseWriter, code int, payload any) (int, error) {
 	res, err := json.Marshal(payload)
 	if err != nil {
-		RespondError(w, http.StatusInternalServerError, ErrorResponse{Errors: []any{"an error occured"}})
+		RespondError(w, http.StatusInternalServerError, ErrorResponse{Errors: []Error{makeError(constant.InternalServerError)}})
 		return -1, err
 	}
+
 	w.WriteHeader(code)
+
 	return w.Write(res)
 }

@@ -1,5 +1,7 @@
 package constant
 
+import "github.com/tanveerprottoy/backend-structure-go/pkg/typesext"
+
 const DBDriverName = "pgx"
 
 // server
@@ -37,3 +39,9 @@ const ParamIsArchived = "isArchived"
 const ParamSortBy = "sortBy"
 
 const FakeUUID = "17e55148-8a8e-411c-bc72-028aecc8a20c"
+
+const (
+	ErrorSingle     typesext.ErrorType = "single"
+	ErrorMultiple   typesext.ErrorType = "multiple"
+	ErrorValidation typesext.ErrorType = "validation"
+)
