@@ -30,12 +30,10 @@ func NewUser(u user.UseCase, v validatorext.Validater) *User {
 // Create handles entity create post request
 func (h *User) Create(w http.ResponseWriter, r *http.Request) {
 	var v dto.CreateUser
-
 	// parse the request body
-	defer r.Body.Close()
-
 	err := httpext.ParseRequestBody(r.Body, &v)
 	if err != nil {
+		err = errorext.ParseJSONError(err)
 		response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorSingle, []error{err}))
 		return
 	}
@@ -150,12 +148,11 @@ func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	defer r.Body.Close()
-
 	// parse the request body
 	var v dto.UpdateUser
 	err := httpext.ParseRequestBody(r.Body, &v)
 	if err != nil {
+		err = errorext.ParseJSONError(err)
 		response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorSingle, []error{err}))
 		return
 	}

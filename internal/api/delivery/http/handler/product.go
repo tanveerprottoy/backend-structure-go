@@ -33,8 +33,6 @@ func NewProduct(u product.UseCase, v validatorext.Validater) *Product {
 // Create handles entity create post request
 func (h *Product) Create(w http.ResponseWriter, r *http.Request) {
 	var v dto.CreateProduct
-	// parse the request body
-	defer r.Body.Close()
 	err := httpext.ParseRequestBody(r.Body, &v)
 	if err != nil {
 		err = errorext.ParseJSONError(err)
@@ -153,12 +151,11 @@ func (h *Product) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	defer r.Body.Close()
-
 	// parse the request body
 	var v dto.UpdateProduct
 	err := httpext.ParseRequestBody(r.Body, &v)
 	if err != nil {
+		err = errorext.ParseJSONError(err)
 		response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorSingle, []error{err}))
 		return
 	}

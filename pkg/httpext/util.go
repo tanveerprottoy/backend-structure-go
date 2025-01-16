@@ -18,10 +18,14 @@ func GetQueryParam(r *http.Request, key string) string {
 
 // ParseRequestBody parses the request body
 func ParseRequestBody(r io.ReadCloser, v any) error {
+	// close the request body
+	defer r.Close()
+
 	err := json.NewDecoder(r).Decode(&v)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
