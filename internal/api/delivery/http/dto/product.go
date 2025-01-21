@@ -7,10 +7,25 @@ type CreateProduct struct {
 	Description string `json:"description" validate:"omitempty"`
 }
 
+func (p *CreateProduct) ToDomainDTO() *product.CreateDTO {
+	return &product.CreateDTO{
+		Name:        p.Name,
+		Description: p.Description,
+	}
+}
+
 type UpdateProduct struct {
 	Name        string `json:"name" validate:"required"`
 	Description string `json:"description" validate:"omitempty"`
 	IsArchived  bool   `json:"isArchived" validate:"boolean"`
+}
+
+func (p *UpdateProduct) ToDomainDTO() *product.UpdateDTO {
+	return &product.UpdateDTO{
+		Name:        p.Name,
+		Description: p.Description,
+		IsArchived:  p.IsArchived,
+	}
 }
 
 type ProductEntity struct {
@@ -51,5 +66,6 @@ func ToProductEntities(products []product.Product) []ProductEntity {
 	for _, p := range products {
 		entityDTOs = append(entityDTOs, *ToProductEntity(p))
 	}
+
 	return entityDTOs
 }

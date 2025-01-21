@@ -11,34 +11,36 @@ import (
 // can be used to mock the repository
 // for service testing
 type MemoryStorage struct {
-	m map[string]product.Product
+	m map[string]*product.Product
 }
 
 func NewMemoryStorage() *MemoryStorage {
-	return &MemoryStorage{m: make(map[string]product.Product)}
+	return &MemoryStorage{m: make(map[string]*product.Product)}
 }
 
-func (s *MemoryStorage) Create(ctx context.Context, e product.Product, args ...any) (string, error) {
+func (s *MemoryStorage) Create(ctx context.Context, e *product.Product, args ...any) (string, error) {
 	s.m[e.ID] = e
 	return e.ID, nil
 }
 
 func (s MemoryStorage) ReadMany(ctx context.Context, limit int, offset int, args ...any) ([]product.Product, error) {
 	entities := make([]product.Product, len(s.m))
+
 	for _, v := range s.m {
-		entities = append(entities, v)
+		entities = append(entities, *v)
 	}
+
 	return entities, nil
 }
 
 func (s MemoryStorage) ReadOne(ctx context.Context, id string, args ...any) (product.Product, error) {
 	if e, ok := s.m[id]; ok {
-		return e, nil
+		return *e, nil
 	}
 	return product.Product{}, errors.New("not found")
 }
 
-func (s *MemoryStorage) Update(ctx context.Context, id string, e product.Product, args ...any) (int64, error) {
+func (s *MemoryStorage) Update(ctx context.Context, id string, e *product.Product, args ...any) (int64, error) {
 	if _, ok := s.m[id]; ok {
 		s.m[id] = e
 		return 1, nil

@@ -9,10 +9,25 @@ type CreateUser struct {
 	Address string `json:"description" validate:"omitempty"`
 }
 
+func (u *CreateUser) ToDomainDTO() *user.CreateDTO {
+	return &user.CreateDTO{
+		Name:    u.Name,
+		Address: u.Address,
+	}
+}
+
 type UpdateUser struct {
 	Name       string `json:"name" validate:"required"`
 	Address    string `json:"description" validate:"omitempty"`
 	IsArchived bool   `json:"isArchived" validate:"boolean"`
+}
+
+func (u *UpdateUser) ToDomainDTO() *user.UpdateDTO {
+	return &user.UpdateDTO{
+		Name:       u.Name,
+		Address:    u.Address,
+		IsArchived: u.IsArchived,
+	}
 }
 
 type UserEntity struct {
@@ -53,5 +68,6 @@ func ToUserEntities(users []user.User) []UserEntity {
 	for _, u := range users {
 		entityDTOs = append(entityDTOs, *ToUserEntity(u))
 	}
+
 	return entityDTOs
 }

@@ -48,10 +48,7 @@ func (h *Product) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create the domain dto
-	productDTO := product.CreateDTO{
-		Name:        v.Name,
-		Description: v.Description,
-	}
+	productDTO := v.ToDomainDTO()
 
 	d, err := h.useCase.Create(r.Context(), productDTO)
 	if err != nil {
@@ -168,11 +165,7 @@ func (h *Product) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create the domain dto
-	productDTO := product.UpdateDTO{
-		Name:        v.Name,
-		Description: v.Description,
-		IsArchived:  v.IsArchived,
-	}
+	productDTO := v.ToDomainDTO()
 
 	d, err := h.useCase.Update(r.Context(), id, productDTO)
 	if err != nil {

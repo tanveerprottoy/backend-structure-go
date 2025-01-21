@@ -22,7 +22,7 @@ func NewStorage(db *sql.DB) *storage {
 	return &storage{db: db}
 }
 
-func (s *storage) Create(ctx context.Context, e product.Product, args ...any) (string, error) {
+func (s *storage) Create(ctx context.Context, e *product.Product, args ...any) (string, error) {
 	var lastID string
 
 	// convert domain product entity to postgres specific entity
@@ -111,7 +111,7 @@ func (s *storage) ReadOne(ctx context.Context, id string, args ...any) (product.
 	return *e, nil
 }
 
-func (s *storage) Update(ctx context.Context, id string, e product.Product, args ...any) (int64, error) {
+func (s *storage) Update(ctx context.Context, id string, e *product.Product, args ...any) (int64, error) {
 	// convert domain product entity to postgres specific entity
 	entity := newProductEntity(e.Name, e.Description, e.CreatedAt, e.UpdatedAt)
 

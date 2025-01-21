@@ -24,7 +24,7 @@ func TestService(t *testing.T) {
 	t.Run("readOneInternal", func(t *testing.T) {
 		var insertedIDs [2]string
 
-		dtos := []user.CreateDTO{
+		dtos := []*user.CreateDTO{
 			{
 				Name:    "name 1",
 				Address: "description 1",
