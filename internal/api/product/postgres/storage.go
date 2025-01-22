@@ -22,11 +22,11 @@ func NewStorage(db *sql.DB) *storage {
 	return &storage{db: db}
 }
 
-func (s *storage) Create(ctx context.Context, e *product.Product, args ...any) (string, error) {
+func (s *storage) Create(ctx context.Context, dto *product.CreateDTO, args ...any) (string, error) {
 	var lastID string
 
 	// convert domain product entity to postgres specific entity
-	entity := newProductEntity(e.Name, e.Description, e.CreatedAt, e.UpdatedAt)
+	entity := newProductEntity(dto.Name, dto.Description, dto.CreatedAt, dto.UpdatedAt)
 
 	// build insert query
 	q := sqlext.BuildInsertQuery(tableName, []string{"name", "description", "created_at", "updated_at"}, "RETURNING id")
@@ -46,6 +46,7 @@ func (s *storage) Create(ctx context.Context, e *product.Product, args ...any) (
 		err := errorext.BuildDBError(err)
 		return lastID, err
 	}
+
 	return lastID, nil
 }
 
@@ -82,7 +83,7 @@ func (s *storage) ReadMany(ctx context.Context, limit, offset int, args ...any) 
 
 	// convert postgres entity to domain entity
 	for _, p := range products {
-		e := product.NewProduct(p.id, p.name, p.description.String, p.createdAt, p.updatedAt)
+		e := product.NewProduct(p.id, p.name, &p.description.String, p.createdAt, p.updatedAt)
 		d = append(d, *e)
 	}
 
@@ -106,14 +107,14 @@ func (s *storage) ReadOne(ctx context.Context, id string, args ...any) (product.
 	}
 
 	// convert postgres entity to domain entity
-	e := product.NewProduct(entity.id, entity.name, entity.description.String, entity.createdAt, entity.updatedAt)
+	e := product.NewProduct(entity.id, entity.name, &entity.description.String, entity.createdAt, entity.updatedAt)
 
 	return *e, nil
 }
 
-func (s *storage) Update(ctx context.Context, id string, e *product.Product, args ...any) (int64, error) {
+func (s *storage) Update(ctx context.Context, id string, dto *product.UpdateDTO, args ...any) (int64, error) {
 	// convert domain product entity to postgres specific entity
-	entity := newProductEntity(e.Name, e.Description, e.CreatedAt, e.UpdatedAt)
+	entity := newProductEntity(dto.Name, dto.Description, 0, dto.UpdatedAt)
 
 	q := sqlext.BuildUpdateQuery(tableName, []string{"name", "description", "updated_at"}, []string{"id"}, "")
 

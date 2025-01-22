@@ -22,11 +22,11 @@ func NewStorage(db *sql.DB) *storage {
 	return &storage{db: db}
 }
 
-func (s *storage) Create(ctx context.Context, e *user.User, args ...any) (string, error) {
+func (s *storage) Create(ctx context.Context, dto *user.CreateDTO, args ...any) (string, error) {
 	var lastID string
 
 	// convert domain product entity to postgres specific entity
-	entity := newUserEntity(e.Name, e.Address, e.CreatedAt, e.UpdatedAt)
+	entity := newUserEntity(dto.Name, dto.Address, dto.CreatedAt, dto.UpdatedAt)
 
 	// build insert query
 	q := sqlext.BuildInsertQuery(tableName, []string{"name", "address", "created_at", "updated_at"}, "RETURNING id")
@@ -82,7 +82,7 @@ func (s *storage) ReadMany(ctx context.Context, limit, offset int, args ...any) 
 
 	// convert postgres entity to domain entity
 	for _, u := range users {
-		e := user.NewUser(u.id, u.name, u.address.String, u.createdAt, u.updatedAt)
+		e := user.NewUser(u.id, u.name, &u.address.String, u.createdAt, u.updatedAt)
 		d = append(d, *e)
 	}
 
@@ -106,14 +106,14 @@ func (s *storage) ReadOne(ctx context.Context, id string, args ...any) (user.Use
 	}
 
 	// convert postgres entity to domain entity
-	e := user.NewUser(entity.id, entity.name, entity.address.String, entity.createdAt, entity.updatedAt)
+	e := user.NewUser(entity.id, entity.name, &entity.address.String, entity.createdAt, entity.updatedAt)
 
 	return *e, nil
 }
 
-func (s *storage) Update(ctx context.Context, id string, e *user.User, args ...any) (int64, error) {
+func (s *storage) Update(ctx context.Context, id string, dto *user.UpdateDTO, args ...any) (int64, error) {
 	// convert domain product entity to postgres specific entity
-	entity := newUserEntity(e.Name, e.Address, e.CreatedAt, e.UpdatedAt)
+	entity := newUserEntity(dto.Name, dto.Address, 0, dto.UpdatedAt)
 
 	q := sqlext.BuildUpdateQuery(tableName, []string{"name", "description", "updated_at"}, []string{"id"}, "")
 

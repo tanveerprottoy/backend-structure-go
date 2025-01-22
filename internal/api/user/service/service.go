@@ -37,20 +37,22 @@ func (s *service) readOneInternal(ctx context.Context, id string) (user.User, er
 func (s *service) Create(ctx context.Context, dto *user.CreateDTO) (user.User, error) {
 	// build entity
 	n := timeext.NowUnix()
-	e := user.NewUser("", dto.Name, dto.Address, n, n)
-	// check if product is valid
-	err := e.Validate()
-	if err != nil {
-		return *e, errorext.NewCustomError(http.StatusBadRequest, err)
-	}
+
+	dto.CreatedAt = n
+	dto.UpdatedAt = n
 
 	l, err := s.repository.Create(ctx, dto)
 	if err != nil {
-		return *e, errorext.BuildCustomError(err)
+		return user.User{}, errorext.BuildCustomError(err)
 	}
 
-	e.ID = l
-	return *e, nil
+	return user.MakeUser(
+		l,
+		dto.Name,
+		dto.Address,
+		dto.CreatedAt,
+		dto.UpdatedAt,
+	), nil
 }
 
 func (s *service) ReadMany(ctx context.Context, limit, page int, args ...any) ([]user.User, error) {
@@ -80,18 +82,23 @@ func (s *service) Update(ctx context.Context, id string, dto *user.UpdateDTO) (u
 	}
 
 	dto.UpdatedAt = timeext.NowUnix()
-	// set description
-	e.SetAddress(dto.Address)
+
 	rowCount, err := s.repository.Update(ctx, id, dto)
 	if err != nil {
 		return e, errorext.BuildCustomError(err)
 	}
 
 	if rowCount > 0 {
-		return e, nil
+		return user.MakeUser(
+			id,
+			dto.Name,
+			dto.Address,
+			e.CreatedAt,
+			dto.UpdatedAt,
+		), nil
 	}
 
-	return e, errorext.NewCustomError(http.StatusBadRequest, errors.New(constant.GenericFailMessage))
+	return user.User{}, errorext.NewCustomError(http.StatusBadRequest, errors.New(constant.GenericFailMessage))
 }
 
 func (s *service) Delete(ctx context.Context, id string) (user.User, error) {

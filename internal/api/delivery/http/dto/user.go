@@ -5,8 +5,8 @@ import (
 )
 
 type CreateUser struct {
-	Name    string `json:"name" validate:"required"`
-	Address string `json:"description" validate:"omitempty"`
+	Name    string  `json:"name" validate:"required"`
+	Address *string `json:"description" validate:"omitempty"`
 }
 
 func (u *CreateUser) ToDomainDTO() *user.CreateDTO {
@@ -17,9 +17,9 @@ func (u *CreateUser) ToDomainDTO() *user.CreateDTO {
 }
 
 type UpdateUser struct {
-	Name       string `json:"name" validate:"required"`
-	Address    string `json:"description" validate:"omitempty"`
-	IsArchived bool   `json:"isArchived" validate:"boolean"`
+	Name       string  `json:"name" validate:"required"`
+	Address    *string `json:"description" validate:"omitempty"`
+	IsArchived bool    `json:"isArchived" validate:"boolean"`
 }
 
 func (u *UpdateUser) ToDomainDTO() *user.UpdateDTO {

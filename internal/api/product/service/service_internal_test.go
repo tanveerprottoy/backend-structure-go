@@ -24,14 +24,16 @@ func TestService(t *testing.T) {
 	t.Run("readOneInternal", func(t *testing.T) {
 		var insertedIDs [2]string
 
+		address := "address 1"
+
 		dtos := []*product.CreateDTO{
 			{
 				Name:        "name 1",
-				Description: "description 1",
+				Description: nil,
 			},
 			{
 				Name:        "name 2",
-				Description: "description 2",
+				Description: &address,
 			},
 		}
 

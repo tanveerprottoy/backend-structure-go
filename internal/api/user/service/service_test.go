@@ -36,7 +36,7 @@ func TestService(t *testing.T) {
 				name: "success",
 				dto: &user.CreateDTO{
 					Name:    "name 1",
-					Address: "address 1",
+					Address: nil,
 				},
 				expected: user.User{
 					Name:    "name 1",
@@ -47,7 +47,7 @@ func TestService(t *testing.T) {
 				name: "fail",
 				dto: &user.CreateDTO{
 					Name:    "name 2",
-					Address: "address 2",
+					Address: nil,
 				},
 				expected: user.User{
 					Name:    "another name",
@@ -155,7 +155,7 @@ func TestService(t *testing.T) {
 				name: "success",
 				dto: &user.UpdateDTO{
 					Name:    "updated name 1",
-					Address: "updated address 1",
+					Address: nil,
 				},
 				expected: user.User{
 					ID:      insertedIDs[0],
@@ -167,7 +167,7 @@ func TestService(t *testing.T) {
 				name: "fail",
 				dto: &user.UpdateDTO{
 					Name:    "updated name 2",
-					Address: "updated address 2",
+					Address: nil,
 				},
 				expected: user.User{
 					ID:      insertedIDs[1],

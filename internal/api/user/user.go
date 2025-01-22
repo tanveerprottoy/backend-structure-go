@@ -11,27 +11,42 @@ type User struct {
 	UpdatedAt  int64
 }
 
-func NewUser(id, name, address string, createdAt, updatedAt int64) *User {
-	p := &User{
+func MakeUser(id, name string, address *string, createdAt, updatedAt int64) User {
+	u := User{
 		ID:        id,
 		Name:      name,
 		CreatedAt: createdAt,
 		UpdatedAt: updatedAt,
 	}
-	p.SetAddress(address)
-	return p
+
+	u.setNillableFields(address)
+
+	return u
 }
 
-func (p User) Validate() error {
-	if p.Name == "" {
+func NewUser(id, name string, address *string, createdAt, updatedAt int64) *User {
+	u := &User{
+		ID:        id,
+		Name:      name,
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	}
+
+	u.setNillableFields(address)
+
+	return u
+}
+
+func (u *User) setNillableFields(address *string) {
+	if address != nil && *address != "" {
+		u.Address = address
+	}
+}
+
+func (u User) Validate() error {
+	if u.Name == "" {
 		return errors.New("name required")
 	}
-	return nil
-}
 
-func (p *User) SetAddress(val string) {
-	if val != "" {
-		v := val
-		p.Address = &v
-	}
+	return nil
 }

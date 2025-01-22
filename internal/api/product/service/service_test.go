@@ -36,7 +36,7 @@ func TestService(t *testing.T) {
 				name: "success",
 				dto: &product.CreateDTO{
 					Name:        "name 1",
-					Description: "description 1",
+					Description: nil,
 				},
 				expected: product.Product{
 					Name:        "name 1",
@@ -47,7 +47,7 @@ func TestService(t *testing.T) {
 				name: "fail",
 				dto: &product.CreateDTO{
 					Name:        "name 2",
-					Description: "description 2",
+					Description: nil,
 				},
 				expected: product.Product{
 					Name:        "another name",
@@ -155,7 +155,7 @@ func TestService(t *testing.T) {
 				name: "success",
 				dto: &product.UpdateDTO{
 					Name:        "updated name 1",
-					Description: "updated description 1",
+					Description: nil,
 				},
 				expected: product.Product{
 					ID:          insertedIDs[0],
@@ -167,7 +167,7 @@ func TestService(t *testing.T) {
 				name: "fail",
 				dto: &product.UpdateDTO{
 					Name:        "updated name 2",
-					Description: "updated description 2",
+					Description: nil,
 				},
 				expected: product.Product{
 					ID:          insertedIDs[1],

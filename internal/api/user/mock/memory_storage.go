@@ -19,8 +19,9 @@ func NewMemoryStorage() *MemoryStorage {
 }
 
 func (s *MemoryStorage) Create(ctx context.Context, dto *user.CreateDTO, args ...any) (string, error) {
-	e := user.NewUser("", dto.Name, dto.Address, 0, 0)
-	
+
+	e := user.NewUser("", dto.Name, nil, 0, 0)
+
 	s.m[e.ID] = *e
 
 	return e.ID, nil
@@ -44,13 +45,12 @@ func (s MemoryStorage) ReadOne(ctx context.Context, id string, args ...any) (use
 	return user.User{}, errors.New("not found")
 }
 
-func (s *MemoryStorage) Update(ctx context.Context, id string, dto *user.CreateDTO, args ...any) (int64, error) {
+func (s *MemoryStorage) Update(ctx context.Context, id string, dto *user.UpdateDTO, args ...any) (int64, error) {
 	if e, ok := s.m[id]; ok {
 		e.Name = dto.Name
 		e.Address = dto.Address
-	
 
-		s.m[id] = *e
+		s.m[id] = e
 		return 1, nil
 	}
 

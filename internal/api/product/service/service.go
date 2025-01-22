@@ -34,24 +34,25 @@ func (s *service) readOneInternal(ctx context.Context, id string) (product.Produ
 }
 
 // create defines the business logic for create post request
-func (s *service) Create(ctx context.Context, d *product.CreateDTO) (product.Product, error) {
+func (s *service) Create(ctx context.Context, dto *product.CreateDTO) (product.Product, error) {
 	// build entity
 	n := timeext.NowUnix()
-	e := product.NewProduct("", d.Name, d.Description, n, n)
-	// check if product is valid
-	err := e.Validate()
+
+	dto.CreatedAt = n
+	dto.UpdatedAt = n
+
+	l, err := s.repository.Create(ctx, dto)
 	if err != nil {
-		return *e, errorext.NewCustomError(http.StatusBadRequest, err)
+		return product.Product{}, errorext.BuildCustomError(err)
 	}
 
-	l, err := s.repository.Create(ctx, e)
-	if err != nil {
-		return *e, errorext.BuildCustomError(err)
-	}
-
-	e.ID = l
-
-	return *e, nil
+	return *product.NewProduct(
+		l,
+		dto.Name,
+		dto.Description,
+		dto.CreatedAt,
+		dto.UpdatedAt,
+	), nil
 }
 
 func (s *service) ReadMany(ctx context.Context, limit, page int, args ...any) ([]product.Product, error) {
@@ -74,17 +75,13 @@ func (s *service) ReadOne(ctx context.Context, id string) (product.Product, erro
 	return e, nil
 }
 
-func (s *service) Update(ctx context.Context, id string, d *product.UpdateDTO) (product.Product, error) {
+func (s *service) Update(ctx context.Context, id string, dto *product.UpdateDTO) (product.Product, error) {
 	e, err := s.readOneInternal(ctx, id)
 	if err != nil {
 		return e, err
 	}
 
-	e.Name = d.Name
-	e.UpdatedAt = timeext.NowUnix()
-	// set description
-	e.SetDescription(d.Description)
-	rowCount, err := s.repository.Update(ctx, id, &e)
+	rowCount, err := s.repository.Update(ctx, id, dto)
 	if err != nil {
 		return e, errorext.BuildCustomError(err)
 	}

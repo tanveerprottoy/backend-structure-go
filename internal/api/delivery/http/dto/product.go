@@ -3,8 +3,8 @@ package dto
 import "github.com/tanveerprottoy/backend-structure-go/internal/api/product"
 
 type CreateProduct struct {
-	Name        string `json:"name" validate:"required"`
-	Description string `json:"description" validate:"omitempty"`
+	Name        string  `json:"name" validate:"required"`
+	Description *string `json:"description" validate:"omitempty"`
 }
 
 func (p *CreateProduct) ToDomainDTO() *product.CreateDTO {
@@ -15,9 +15,9 @@ func (p *CreateProduct) ToDomainDTO() *product.CreateDTO {
 }
 
 type UpdateProduct struct {
-	Name        string `json:"name" validate:"required"`
-	Description string `json:"description" validate:"omitempty"`
-	IsArchived  bool   `json:"isArchived" validate:"boolean"`
+	Name        string  `json:"name" validate:"required"`
+	Description *string `json:"description" validate:"omitempty"`
+	IsArchived  bool    `json:"isArchived" validate:"boolean"`
 }
 
 func (p *UpdateProduct) ToDomainDTO() *product.UpdateDTO {
