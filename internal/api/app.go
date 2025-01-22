@@ -4,7 +4,7 @@ import (
 	"github.com/tanveerprottoy/backend-structure-go/pkg/server"
 )
 
-// App contains the components of the application
+// App contains the configuration and server
 type App struct {
 	cfg *Config
 	srv *server.Server

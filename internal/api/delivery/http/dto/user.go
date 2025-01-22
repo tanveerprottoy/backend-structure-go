@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"encoding/json"
+
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/user"
 )
 
@@ -30,6 +32,11 @@ func (u *UpdateUser) ToDomainDTO() *user.UpdateDTO {
 	}
 }
 
+// UserEntityAlias is a custom type to avoid infinite recursion in MarshalJSON
+// As UserEntityAlias itself doesn't have MarshalJSON implemented,
+// it doesn't infinitely recurse
+type UserEntityAlias UserEntity
+
 type UserEntity struct {
 	ID         string  `json:"id"`
 	Name       string  `json:"name"`
@@ -48,6 +55,18 @@ func NewUserEntity(id, name string, address *string, isArchived bool, createdAt,
 		CreatedAt:  createdAt,
 		UpdatedAt:  updatedAt,
 	}
+}
+
+func (u UserEntity) MarshalJSON() ([]byte, error) {
+	// This will not recurse infinitely
+	return json.Marshal(&struct {
+		UserEntityAlias
+	}{
+		UserEntityAlias: UserEntityAlias(u),
+	})
+
+	// or
+	// return json.Marshal(UserEntityAlias(u))
 }
 
 // helper function to convert to dto entity from domain entity

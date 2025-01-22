@@ -8,7 +8,7 @@ import (
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/user/service"
 )
 
-// Config holds the components of the current package
+// Config contains the components of the current package
 type Config struct {
 	UseCase    user.UseCase
 	Repository user.Repository

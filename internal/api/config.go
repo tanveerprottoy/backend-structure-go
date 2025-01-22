@@ -12,6 +12,8 @@ import (
 	"github.com/tanveerprottoy/backend-structure-go/pkg/validatorext"
 )
 
+// Config contains the components of the application
+// and configures them as required
 type Config struct {
 	DBClient  *sqlext.Client
 	router    *router.Router
@@ -24,7 +26,7 @@ func NewConfig() *Config {
 	c.initDB()
 	c.initRouter()
 	c.initValidator()
-	c.initComponents()
+	c.initPackages()
 	return c
 }
 
@@ -82,9 +84,10 @@ func (c *Config) initRoutes(handlers []any) {
 	)
 }
 
-// initComponents initializes application components
-func (c *Config) initComponents() {
+// initPackages initializes application packages
+func (c *Config) initPackages() {
 	product := productcfg.NewConfig(c.DBClient.DB())
+
 	user := usercfg.NewConfig(c.DBClient.DB())
 
 	c.initRoutes(
