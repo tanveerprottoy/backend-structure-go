@@ -56,7 +56,7 @@ func NewErrorResponse(typ typesext.ErrorType, errors []error) *ErrorResponse {
 	}
 }
 
-func RespondError(w http.ResponseWriter, code int, payload any) (int, error) {
+func RespondError(w http.ResponseWriter, code int, payload *ErrorResponse) (int, error) {
 	w.WriteHeader(code)
 
 	res, errs := json.Marshal(payload)
@@ -71,7 +71,7 @@ func RespondError(w http.ResponseWriter, code int, payload any) (int, error) {
 func Respond(w http.ResponseWriter, code int, payload any) (int, error) {
 	res, err := json.Marshal(payload)
 	if err != nil {
-		RespondError(w, http.StatusInternalServerError, ErrorResponse{Errors: []Error{makeError(constant.InternalServerError)}})
+		RespondError(w, http.StatusInternalServerError, &ErrorResponse{Errors: []Error{makeError(constant.InternalServerError)}})
 		return -1, err
 	}
 

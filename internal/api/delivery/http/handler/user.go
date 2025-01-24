@@ -51,7 +51,7 @@ func (h *User) Create(w http.ResponseWriter, r *http.Request) {
 	d, err := h.useCase.Create(r.Context(), userDTO)
 	if err != nil {
 		err := errorext.ParseCustomError(err)
-		response.RespondError(w, err.Code(), err.Err())
+		response.RespondError(w, err.Code(), response.NewErrorResponse(constant.ErrorSingle, []error{err}))
 		return
 	}
 
@@ -96,7 +96,7 @@ func (h *User) ReadMany(w http.ResponseWriter, r *http.Request) {
 	d, err := h.useCase.ReadMany(r.Context(), limit, page, args...)
 	if err != nil {
 		err := errorext.ParseCustomError(err)
-		response.RespondError(w, err.Code(), err.Err())
+		response.RespondError(w, err.Code(), response.NewErrorResponse(constant.ErrorSingle, []error{err}))
 		return
 	}
 
@@ -125,7 +125,7 @@ func (h *User) ReadOne(w http.ResponseWriter, r *http.Request) {
 	d, err := h.useCase.ReadOne(r.Context(), id)
 	if err != nil {
 		err := errorext.ParseCustomError(err)
-		response.RespondError(w, err.Code(), err.Err())
+		response.RespondError(w, err.Code(), response.NewErrorResponse(constant.ErrorSingle, []error{err}))
 		return
 	}
 
@@ -167,7 +167,7 @@ func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 	d, err := h.useCase.Update(r.Context(), id, userDTO)
 	if err != nil {
 		err := errorext.ParseCustomError(err)
-		response.RespondError(w, err.Code(), err.Err())
+		response.RespondError(w, err.Code(), response.NewErrorResponse(constant.ErrorSingle, []error{err}))
 		return
 	}
 
@@ -190,7 +190,7 @@ func (h *User) Delete(w http.ResponseWriter, r *http.Request) {
 	d, err := h.useCase.Delete(r.Context(), id)
 	if err != nil {
 		err := errorext.ParseCustomError(err)
-		response.RespondError(w, err.Code(), err.Err())
+		response.RespondError(w, err.Code(), response.NewErrorResponse(constant.ErrorSingle, []error{err}))
 		return
 	}
 
