@@ -25,14 +25,11 @@ func NewStorage(db *sql.DB) *storage {
 func (s *storage) Create(ctx context.Context, dto *product.CreateDTO, args ...any) (string, error) {
 	var lastID string
 
-	// convert domain product entity to postgres specific entity
-	entity := newProductEntity(dto.Name, dto.Description, dto.CreatedAt, dto.UpdatedAt)
-
 	// build insert query
 	q := sqlext.BuildInsertQuery(tableName, []string{"name", "description", "created_at", "updated_at"}, "RETURNING id")
 
 	// execute the query
-	row := s.db.QueryRowContext(ctx, q, entity.name, entity.description, entity.createdAt, entity.updatedAt)
+	row := s.db.QueryRowContext(ctx, q, dto.Name, dto.Description, dto.CreatedAt, dto.UpdatedAt)
 	err := row.Err()
 	if err != nil {
 		log.Printf("err: %v", err)
@@ -51,20 +48,18 @@ func (s *storage) Create(ctx context.Context, dto *product.CreateDTO, args ...an
 }
 
 func (s *storage) ReadMany(ctx context.Context, limit, offset int, args ...any) ([]product.Product, error) {
-	cl := ""
-	vals := make([]any, 0)
 	d := make([]product.Product, 0)
+
+	q := fmt.Sprintf("SELECT id, name, description, is_archived, created_at, updated_at FROM %s", tableName)
+	vals := make([]any, 0)
+
 	if args[0] != nil {
-		cl = " WHERE is_archived = $1"
+		q += " WHERE is_archived = $1"
 		vals = append(vals, args[0].(bool))
 	}
-	if cl == "" {
-		cl = " LIMIT $1 OFFSET $2"
-	} else {
-		cl += fmt.Sprintf(" LIMIT $%d OFFSET $%d", len(vals)+1, len(vals)+2)
-	}
+
+	q += fmt.Sprintf(" LIMIT $%d OFFSET $%d", len(vals)+1, len(vals)+2)
 	vals = append(vals, limit, offset)
-	q := "SELECT * FROM " + tableName + cl
 
 	rows, err := s.db.QueryContext(ctx, q, vals...)
 	if err != nil {
@@ -83,15 +78,23 @@ func (s *storage) ReadMany(ctx context.Context, limit, offset int, args ...any) 
 
 	// convert postgres entity to domain entity
 	for _, p := range products {
-		e := product.NewProduct(p.id, p.name, &p.description.String, p.createdAt, p.updatedAt)
-		d = append(d, *e)
+		d = append(d, product.Product{
+			ID:          p.id,
+			Name:        p.name,
+			Description: &p.description.String,
+			IsArchived:  p.isArchived,
+			CreatedAt:   p.createdAt,
+			UpdatedAt:   p.updatedAt,
+		})
 	}
 
 	return d, nil
 }
 
 func (s *storage) ReadOne(ctx context.Context, id string, args ...any) (product.Product, error) {
-	q := sqlext.BuildSelectQuery(tableName, []string{}, []string{"id"}, "LIMIT $2")
+	projections := []string{"id", "name", "description", "is_archived", "created_at", "updated_at"}
+
+	q := sqlext.BuildSelectQuery(tableName, projections, []string{"id"}, "LIMIT $2")
 
 	row := s.db.QueryRowContext(ctx, q, id, 1)
 	err := row.Err()
@@ -107,18 +110,20 @@ func (s *storage) ReadOne(ctx context.Context, id string, args ...any) (product.
 	}
 
 	// convert postgres entity to domain entity
-	e := product.NewProduct(entity.id, entity.name, &entity.description.String, entity.createdAt, entity.updatedAt)
-
-	return *e, nil
+	return product.Product{
+		ID:          entity.id,
+		Name:        entity.name,
+		Description: &entity.description.String,
+		IsArchived:  entity.isArchived,
+		CreatedAt:   entity.createdAt,
+		UpdatedAt:   entity.updatedAt,
+	}, nil
 }
 
 func (s *storage) Update(ctx context.Context, id string, dto *product.UpdateDTO, args ...any) (int64, error) {
-	// convert domain product entity to postgres specific entity
-	entity := newProductEntity(dto.Name, dto.Description, 0, dto.UpdatedAt)
-
 	q := sqlext.BuildUpdateQuery(tableName, []string{"name", "description", "updated_at"}, []string{"id"}, "")
 
-	res, err := s.db.ExecContext(ctx, q, entity.name, entity.description, entity.updatedAt, id)
+	res, err := s.db.ExecContext(ctx, q, dto.Name, dto.Description, dto.UpdatedAt, id)
 	if err != nil {
 		err := errorext.BuildDBError(err)
 		return -1, err

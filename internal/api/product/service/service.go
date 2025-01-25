@@ -30,6 +30,7 @@ func (s *service) readOneInternal(ctx context.Context, id string) (product.Produ
 	if err != nil {
 		return e, errorext.BuildCustomError(err)
 	}
+	
 	return e, nil
 }
 
