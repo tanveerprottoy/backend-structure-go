@@ -41,20 +41,31 @@ func (e *productEntity) scanRow(row *sql.Row) error {
 		log.Println("error: ", err)
 		return errorext.BuildDBError(err)
 	}
+
 	return nil
 }
 
 func (e *productEntity) scanRows(rows *sql.Rows) ([]productEntity, error) {
 	d := []productEntity{}
+
 	// Loop through rows, using Scan to assign column data to struct fields.
 	for rows.Next() {
 		var p productEntity
+
 		// fmt.Printf("Pointer: %p\n", &e)
 		if err := rows.Scan(&p.id, &p.name, &p.description, &p.isArchived, &p.createdAt, &p.updatedAt); err != nil {
 			log.Println("error: ", err)
 			return nil, errorext.BuildDBError(err)
 		}
+
 		d = append(d, p)
 	}
+
+	// Check for errors from iterating over rows.
+	if err := rows.Err(); err != nil {
+		log.Println("error: ", err)
+		return nil, errorext.BuildDBError(err)
+	}
+
 	return d, nil
 }
