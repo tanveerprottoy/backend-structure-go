@@ -79,12 +79,12 @@ func (s *storage) ReadMany(ctx context.Context, limit, offset int, args ...any) 
 	// convert postgres entity to domain entity
 	for _, u := range users {
 		d = append(d, user.User{
-			ID:         u.id,
-			Name:       u.name,
-			Address:    &u.address.String,
-			IsArchived: u.isArchived,
-			CreatedAt:  u.createdAt,
-			UpdatedAt:  u.updatedAt,
+			ID:         u.Id,
+			Name:       u.Name,
+			Address:    &u.Address.String,
+			IsArchived: u.IsArchived,
+			CreatedAt:  u.CreatedAt,
+			UpdatedAt:  u.UpdatedAt,
 		})
 	}
 
@@ -111,12 +111,12 @@ func (s *storage) ReadOne(ctx context.Context, id string, args ...any) (user.Use
 
 	// convert postgres entity to domain entity
 	return user.User{
-		ID:         entity.id,
-		Name:       entity.name,
-		Address:    &entity.address.String,
-		IsArchived: entity.isArchived,
-		CreatedAt:  entity.createdAt,
-		UpdatedAt:  entity.updatedAt,
+		ID:         entity.Id,
+		Name:       entity.Name,
+		Address:    &entity.Address.String,
+		IsArchived: entity.IsArchived,
+		CreatedAt:  entity.CreatedAt,
+		UpdatedAt:  entity.UpdatedAt,
 	}, nil
 }
 
