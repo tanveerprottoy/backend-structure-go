@@ -91,12 +91,12 @@ func (e *userEntity) scanMany(rows *sql.Rows) ([]userEntity, error) {
 	}
 
 	for rows.Next() {
-		e := userEntity{}
+		entity := userEntity{}
 		pointers := make([]any, len(columnNames))
 		// pointers array's index
 		j := 0
 
-		val := reflect.ValueOf(&e).Elem()
+		val := reflect.ValueOf(&entity).Elem()
 
 		for i := 0; i < val.NumField(); i++ {
 			f := val.Field(i)
@@ -133,7 +133,7 @@ func (e *userEntity) scanMany(rows *sql.Rows) ([]userEntity, error) {
 			return d, fmt.Errorf("error: %w", err)
 		}
 
-		d = append(d, e)
+		d = append(d, entity)
 	}
 
 	if err := rows.Err(); err != nil {
