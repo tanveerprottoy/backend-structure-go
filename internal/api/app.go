@@ -1,6 +1,8 @@
 package api
 
 import (
+	"os"
+
 	"github.com/tanveerprottoy/backend-structure-go/pkg/server"
 )
 
@@ -20,8 +22,7 @@ func NewApp() *App {
 
 // initServer initializes the server
 func (a *App) initServer() {
-	a.srv = server.NewServer(":8080", a.cfg.router.Mux)
-	// a.srv = server.NewServer(":"+os.Getenv("PORT"), a.cfg.router.Mux)
+	a.srv = server.NewServer(":"+os.Getenv("PORT"), a.cfg.router.Mux)
 }
 
 // configureGracefulShutdown configures graceful shutdown

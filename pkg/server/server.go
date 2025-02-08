@@ -43,14 +43,24 @@ func (s *Server) ConfigureGracefulShutdown(defferedFunc func()) {
 		// this func listens for SIGINT and initiates
 		// shutdown when SIGINT is received
 		ch := make(chan os.Signal, 1)
+
+		// register ch to receive interrupt signal
 		signal.Notify(ch, os.Interrupt)
+
+		// this will block, wait for signal
+		// receive data from ch
 		<-ch
+
 		// Received an interrupt signal, shut down.
 		log.Printf("Received an interrupt signal")
+
 		if defferedFunc != nil {
 			defer defferedFunc()
 		}
+
 		s.Shutdown()
+
+		// close the idle connection close channel
 		close(s.idleConnsClosed)
 	}()
 }
@@ -58,13 +68,16 @@ func (s *Server) ConfigureGracefulShutdown(defferedFunc func()) {
 // Start starts the server
 func (s *Server) Start() {
 	log.Println("Server starting")
+
 	// if err == http.ErrServerClosed do nothing
 	if err := s.httpServer.ListenAndServe(); err != http.ErrServerClosed {
 		// Error starting or closing listener:
 		log.Fatalf("HTTP Server ListenAndServe: %v", err)
 	}
+
 	// wait for idle connections to be closed
 	<-s.idleConnsClosed
+
 	log.Println("Server shutdown")
 }
 
