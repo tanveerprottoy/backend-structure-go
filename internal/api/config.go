@@ -24,11 +24,13 @@ type Config struct {
 
 func NewConfig() *Config {
 	c := new(Config)
+    
 	c.loadEnv()
 	c.initDB()
 	c.initRouter()
 	c.initValidator()
 	c.initPackages()
+
 	return c
 }
 
