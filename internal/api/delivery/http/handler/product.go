@@ -41,9 +41,9 @@ func (h *Product) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// validate the request body
-	errors := h.validater.Validate(&v)
-	if errors != nil {
-		response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorMultiple, errors))
+	errs := h.validater.Validate(&v)
+	if errs != nil {
+		response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorMultiple, errs))
 		return
 	}
 
@@ -158,9 +158,9 @@ func (h *Product) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// validate the request body
-	errors := h.validater.Validate(&v)
-	if errors != nil {
-		response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorMultiple, errors))
+	errs := h.validater.Validate(&v)
+	if errs != nil {
+		response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorMultiple, errs))
 		return
 	}
 
