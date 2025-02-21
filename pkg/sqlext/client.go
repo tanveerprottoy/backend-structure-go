@@ -10,6 +10,7 @@ import (
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/constant"
+	"github.com/tanveerprottoy/backend-structure-go/pkg/must"
 )
 
 const (
@@ -66,14 +67,14 @@ func (d *Client) init(opts Options) {
 		opts.SSLMode,
 	)
 	log.Println("connStr: ", connStr)
-	var err error
+	// var err error
 	// Opening a driver typically will not attempt to connect to the database.
-	d.db, err = sql.Open(constant.DBDriverName, connStr)
-	if err != nil {
+	d.db = must.Must(sql.Open(constant.DBDriverName, connStr))
+	/* if err != nil {
 		// This will not be a connection error, but a DSN parse error or
 		// another initialization error.
 		log.Fatalf("db drive open failed with error: %v", err)
-	}
+	} */
 	// Ping the database to verify DSN is valid and the
 	// server is accessible
 	d.ping(context.Background())
