@@ -1,10 +1,13 @@
 package handler
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/delivery/http/dto"
@@ -27,8 +30,27 @@ func NewUser(u user.UseCase, v validatorext.Validater) *User {
 	return &User{useCase: u, validater: v}
 }
 
+func (u *User) teeReaderMultiWriter(w http.ResponseWriter, r *http.Request) {
+	req := make(map[string]interface{})
+
+	// tee reader
+	json.NewDecoder(io.TeeReader(r.Body, os.Stdout)).
+		Decode(&req)
+
+	response := map[string]string{
+		"message": "Looking great",
+	}
+
+	// multi writer
+	json.NewEncoder(io.MultiWriter(os.Stdout, w)).
+		Encode(response)
+}
+
 // Create handles entity create post request
-func (h *User) Create(w http.ResponseWriter, r *http.Request) {
+func (u *User) Create(w http.ResponseWriter, r *http.Request) {
+	// test teeReaderMultiWriter
+	u.teeReaderMultiWriter(w, r)
+
 	var v dto.CreateUser
 	// parse the request body
 	err := httpext.ParseRequestBody(r.Body, &v)
@@ -39,7 +61,7 @@ func (h *User) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// validate the request body
-	errs := h.validater.Validate(&v)
+	errs := u.validater.Validate(&v)
 	if errs != nil {
 		response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorMultiple, errs))
 		return
@@ -48,7 +70,7 @@ func (h *User) Create(w http.ResponseWriter, r *http.Request) {
 	// create the domain dto
 	userDTO := v.ToDomainDTO()
 
-	d, err := h.useCase.Create(r.Context(), userDTO)
+	d, err := u.useCase.Create(r.Context(), userDTO)
 	if err != nil {
 		err := errorext.ParseCustomError(err)
 		response.RespondError(w, err.Code(), response.NewErrorResponse(constant.ErrorSingle, []error{err}))
@@ -64,7 +86,7 @@ func (h *User) Create(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *User) ReadMany(w http.ResponseWriter, r *http.Request) {
+func (u *User) ReadMany(w http.ResponseWriter, r *http.Request) {
 	limit := 10
 	page := 1
 	var err error
@@ -92,8 +114,9 @@ func (h *User) ReadMany(w http.ResponseWriter, r *http.Request) {
 	if isArchivedStr == "true" {
 		isArchived = true
 	}
+
 	args := []any{isArchived}
-	d, err := h.useCase.ReadMany(r.Context(), limit, page, args...)
+	d, err := u.useCase.ReadMany(r.Context(), limit, page, args...)
 	if err != nil {
 		err := errorext.ParseCustomError(err)
 		response.RespondError(w, err.Code(), response.NewErrorResponse(constant.ErrorSingle, []error{err}))
@@ -115,14 +138,14 @@ func (h *User) ReadMany(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *User) ReadOne(w http.ResponseWriter, r *http.Request) {
+func (u *User) ReadOne(w http.ResponseWriter, r *http.Request) {
 	id := httpext.GetURLParam(r, constant.ParamId)
 	if id == "" {
 		response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorSingle, []error{errors.New(constant.MissingRequiredPathParam)}))
 		return
 	}
 
-	d, err := h.useCase.ReadOne(r.Context(), id)
+	d, err := u.useCase.ReadOne(r.Context(), id)
 	if err != nil {
 		err := errorext.ParseCustomError(err)
 		response.RespondError(w, err.Code(), response.NewErrorResponse(constant.ErrorSingle, []error{err}))
@@ -138,7 +161,7 @@ func (h *User) ReadOne(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *User) Update(w http.ResponseWriter, r *http.Request) {
+func (u *User) Update(w http.ResponseWriter, r *http.Request) {
 	id := httpext.GetURLParam(r, constant.ParamId)
 	if id == "" {
 		response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorSingle, []error{errors.New(constant.ApiPattern)}))
@@ -155,7 +178,7 @@ func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// validate the request body
-	errs := h.validater.Validate(&v)
+	errs := u.validater.Validate(&v)
 	if errs != nil {
 		response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorMultiple, errs))
 		return
@@ -164,7 +187,7 @@ func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 	// create the domain dto
 	userDTO := v.ToDomainDTO()
 
-	d, err := h.useCase.Update(r.Context(), id, userDTO)
+	d, err := u.useCase.Update(r.Context(), id, userDTO)
 	if err != nil {
 		err := errorext.ParseCustomError(err)
 		response.RespondError(w, err.Code(), response.NewErrorResponse(constant.ErrorSingle, []error{err}))
@@ -180,14 +203,14 @@ func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *User) Delete(w http.ResponseWriter, r *http.Request) {
+func (u *User) Delete(w http.ResponseWriter, r *http.Request) {
 	id := httpext.GetURLParam(r, constant.ParamId)
 	if id == "" {
 		response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorSingle, []error{errors.New(constant.MissingRequiredPathParam)}))
 		return
 	}
 
-	d, err := h.useCase.Delete(r.Context(), id)
+	d, err := u.useCase.Delete(r.Context(), id)
 	if err != nil {
 		err := errorext.ParseCustomError(err)
 		response.RespondError(w, err.Code(), response.NewErrorResponse(constant.ErrorSingle, []error{err}))
