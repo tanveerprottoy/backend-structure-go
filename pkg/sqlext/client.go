@@ -47,15 +47,15 @@ func GetInstance(opts Options) *Client {
 
 // Ping the database to verify DSN is valid and the
 // server is accessible. If the ping fails exit the program with an error.
-func (d *Client) ping(ctx context.Context) {
+func (c *Client) ping(ctx context.Context) {
 	ctx, cancel := context.WithTimeout(ctx, pingTimeout*time.Second)
 	defer cancel()
-	if err := d.db.PingContext(ctx); err != nil {
+	if err := c.db.PingContext(ctx); err != nil {
 		log.Fatalf("ping failed with error: %v", err)
 	}
 }
 
-func (d *Client) init(opts Options) {
+func (c *Client) init(opts Options) {
 	connStr := fmt.Sprintf(
 		"host=%s port=%s user=%s "+
 			"password=%s dbname=%s sslmode=%s",
@@ -69,7 +69,7 @@ func (d *Client) init(opts Options) {
 	log.Println("connStr: ", connStr)
 	// var err error
 	// Opening a driver typically will not attempt to connect to the database.
-	d.db = must.Must(sql.Open(constant.DBDriverName, connStr))
+	c.db = must.Must(sql.Open(constant.DBDriverName, connStr))
 	/* if err != nil {
 		// This will not be a connection error, but a DSN parse error or
 		// another initialization error.
@@ -77,20 +77,20 @@ func (d *Client) init(opts Options) {
 	} */
 	// Ping the database to verify DSN is valid and the
 	// server is accessible
-	d.ping(context.Background())
+	c.ping(context.Background())
 	log.Println("Successfully connected!")
 	// set max idle & open connections
 	/* d.db.SetMaxIdleConns(maxIdleConns)
 	d.db.SetMaxOpenConns(maxOpenConns) */
 	// print the db stats
-	stat := d.db.Stats()
+	stat := c.db.Stats()
 	log.Printf("DB.stats: idle=%d, inUse=%d,  maxOpen=%d", stat.Idle, stat.InUse, stat.MaxOpenConnections)
 }
 
-func (d *Client) Close() error {
-	return d.db.Close()
+func (c *Client) Close() error {
+	return c.db.Close()
 }
 
-func (d *Client) DB() *sql.DB {
-	return d.db
+func (c *Client) DB() *sql.DB {
+	return c.db
 }
