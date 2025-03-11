@@ -1,13 +1,10 @@
 package handler
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/delivery/http/dto"
@@ -30,27 +27,8 @@ func NewUser(u user.UseCase, v validatorext.Validater) *User {
 	return &User{useCase: u, validater: v}
 }
 
-func (u *User) teeReaderMultiWriter(w http.ResponseWriter, r *http.Request) {
-	req := make(map[string]interface{})
-
-	// tee reader
-	json.NewDecoder(io.TeeReader(r.Body, os.Stdout)).
-		Decode(&req)
-
-	response := map[string]string{
-		"message": "Looking great",
-	}
-
-	// multi writer
-	json.NewEncoder(io.MultiWriter(os.Stdout, w)).
-		Encode(response)
-}
-
 // Create handles entity create post request
 func (u *User) Create(w http.ResponseWriter, r *http.Request) {
-	// test teeReaderMultiWriter
-	u.teeReaderMultiWriter(w, r)
-
 	var v dto.CreateUser
 	// parse the request body
 	err := httpext.ParseRequestBody(r.Body, &v)

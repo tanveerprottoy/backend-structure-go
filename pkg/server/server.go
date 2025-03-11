@@ -11,6 +11,8 @@ import (
 type Server struct {
 	httpServer *http.Server
 	// empty struct consumes zero memory
+	// this channel is used to wait for idle connections to be closed
+	// before shutting down the server
 	idleConnsClosed chan struct{}
 }
 
