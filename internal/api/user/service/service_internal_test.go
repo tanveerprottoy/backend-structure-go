@@ -43,6 +43,7 @@ func TestService(t *testing.T) {
 			if err != nil {
 				t.Skip(err)
 			}
+			
 			insertedIDs[i] = e.ID
 		}
 
@@ -69,10 +70,11 @@ func TestService(t *testing.T) {
 		for _, test := range tests {
 			// run test in a sub test
 			t.Run(test.name, func(t *testing.T) {
-				e, err := s.ReadOne(context.Background(), id)
+				e, err := s.readOneInternal(context.Background(), id)
 				if err != nil {
 					t.Error(err)
 				}
+
 				if e.ID != test.expected {
 					t.Error("id is not equal")
 				}
