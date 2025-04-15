@@ -67,6 +67,10 @@ func (h *Product) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Product) ReadMany(w http.ResponseWriter, r *http.Request) {
+	// temp
+	response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorSingle, []error{errors.New("bad request")}))
+	return
+
 	limit := 10
 	page := 1
 	var err error

@@ -35,7 +35,7 @@ func (c *Config) loadEnv() {
 
 // initDB initializes DB client
 func (c *Config) initDB() {
-	opts := sqlext.Options{
+	opts := sqlext.Config{
 		Host:     os.Getenv("DB_HOST"),
 		Port:     os.Getenv("DB_PORT"),
 		Username: os.Getenv("DB_USERNAME"),

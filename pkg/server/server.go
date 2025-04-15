@@ -6,7 +6,31 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"time"
 )
+
+type Option func(*Server)
+
+// WithReadTimeout sets the ReadTimeout for the server
+func WithReadTimeout(t time.Duration) Option {
+	return func(srv *Server) {
+		srv.httpServer.ReadTimeout = t
+	}
+}
+
+// WithReadHeaderTimeout sets the ReadHeaderTimeout for the server
+func WithReadHeaderTimeout(t time.Duration) Option {
+	return func(srv *Server) {
+		srv.httpServer.ReadHeaderTimeout = t
+	}
+}
+
+// WithWriteTimeout sets the WriteTimeout for the server
+func WithWriteTimeout(t time.Duration) Option {
+	return func(srv *Server) {
+		srv.httpServer.WriteTimeout = t
+	}
+}
 
 type Server struct {
 	httpServer *http.Server
@@ -17,23 +41,25 @@ type Server struct {
 }
 
 // NewServer initializes the server
-func NewServer(address string, handler http.Handler, opts ...any) *Server {
-	return &Server{
+func NewServer(address string, handler http.Handler, opts ...Option) *Server {
+	srv := &Server{
 		httpServer: &http.Server{
 			Addr:    address,
 			Handler: handler,
-			/* ReadTimeout:       constant.ServerReadTimeout * time.Second,
-			ReadHeaderTimeout: constant.ServerReadHeaderTimeout * time.Second,
-			WriteTimeout:      constant.ServerWriteTimeout * time.Second,
-			*/
 		},
 	}
+
+	for _, opt := range opts {
+		opt(srv)
+	}
+
+	return srv
 }
 
 func (s *Server) Shutdown() {
 	if err := s.httpServer.Shutdown(context.Background()); err != nil {
 		// Error from closing listeners, or context timeout:
-		log.Printf("HTTP Server shutdown error: %v", err)
+		log.Printf("HTTP server shutdown error: %v", err)
 	}
 }
 
@@ -41,6 +67,7 @@ func (s *Server) Shutdown() {
 func (s *Server) ConfigureGracefulShutdown(defferedFunc func()) {
 	// code to support graceful shutdown
 	s.idleConnsClosed = make(chan struct{})
+	
 	go func() {
 		// this func listens for SIGINT and initiates
 		// shutdown when SIGINT is received
@@ -69,18 +96,18 @@ func (s *Server) ConfigureGracefulShutdown(defferedFunc func()) {
 
 // Start starts the server
 func (s *Server) Start() {
-	log.Println("Server starting")
+	log.Println("server starting")
 
 	// if err == http.ErrServerClosed do nothing
 	if err := s.httpServer.ListenAndServe(); err != http.ErrServerClosed {
 		// Error starting or closing listener:
-		log.Fatalf("HTTP Server ListenAndServe: %v", err)
+		log.Fatalf("HTTP server ListenAndServe: %v", err)
 	}
 
 	// wait for idle connections to be closed
 	<-s.idleConnsClosed
 
-	log.Println("Server shutdown")
+	log.Println("server shutdown")
 }
 
 // HTTPServer returns the http server

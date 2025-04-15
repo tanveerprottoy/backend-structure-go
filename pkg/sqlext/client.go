@@ -19,7 +19,9 @@ const (
 	maxOpenConns = 7
 )
 
-type Options struct {
+// Config contains the configuration for the database handle
+// it is used as convenience over a number of parameters
+type Config struct {
 	Host     string
 	Port     string
 	Username string
@@ -28,16 +30,32 @@ type Options struct {
 	SSLMode  string
 }
 
+type Option func(*Client)
+
+// WithTLS sets the TLS configuration for the database connection
+// rootCert = '/path/to/my/server-ca.pem'
+// clientCert = '/path/to/my/client-cert.pem'
+// clientKey = '/path/to/my/client-key.pem'
+func WithTLS(rootCert, clientCert, clientKey string) Option {
+	return func(c *Client) {
+		// Configure SSL certificates
+		c.dsn = fmt.Sprintf(" sslrootcert=%s sslcert=%s sslkey=%s",
+			rootCert, clientCert, clientKey)
+	}
+}
+
 var (
 	instance *Client
 	once     sync.Once
 )
 
 type Client struct {
-	db *sql.DB
+	// dsn/DSN = Data Source Name
+	dsn string
+	db  *sql.DB
 }
 
-func GetInstance(opts Options) *Client {
+func GetInstance(opts Config) *Client {
 	once.Do(func() {
 		instance = new(Client)
 		instance.init(opts)
@@ -55,8 +73,8 @@ func (c *Client) ping(ctx context.Context) {
 	}
 }
 
-func (c *Client) init(opts Options) {
-	connStr := fmt.Sprintf(
+func (c *Client) init(opts Config) {
+	c.dsn = fmt.Sprintf(
 		"host=%s port=%s user=%s "+
 			"password=%s dbname=%s sslmode=%s",
 		opts.Host,
@@ -66,24 +84,24 @@ func (c *Client) init(opts Options) {
 		opts.DBName,
 		opts.SSLMode,
 	)
-	log.Println("connStr: ", connStr)
-	// var err error
-	// Opening a driver typically will not attempt to connect to the database.
-	c.db = must.Must(sql.Open(constant.DBDriverName, connStr))
-	/* if err != nil {
-		// This will not be a connection error, but a DSN parse error or
-		// another initialization error.
-		log.Fatalf("db drive open failed with error: %v", err)
-	} */
-	// Ping the database to verify DSN is valid and the
-	// server is accessible
+
+	log.Println("dsn: ", c.dsn)
+
+	// Opening a driver typically will not attempt to connect to the database
+	// using Must pattern here to ensure that the connection is established
+	c.db = must.Must(sql.Open(constant.DBDriverName, c.dsn))
+
+	// Ping the database to verify DSN is valid and the server is accessible
 	c.ping(context.Background())
+
 	log.Println("Successfully connected!")
+
 	// set max idle & open connections
 	/* d.db.SetMaxIdleConns(maxIdleConns)
 	d.db.SetMaxOpenConns(maxOpenConns) */
-	// print the db stats
+
 	stat := c.db.Stats()
+	// print the db stats
 	log.Printf("DB.stats: idle=%d, inUse=%d,  maxOpen=%d", stat.Idle, stat.InUse, stat.MaxOpenConnections)
 }
 

@@ -2,7 +2,9 @@ package api
 
 import (
 	"os"
+	"time"
 
+	"github.com/tanveerprottoy/backend-structure-go/pkg/constant"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/server"
 )
 
@@ -22,7 +24,13 @@ func NewApp() *App {
 
 // initServer initializes the server
 func (a *App) initServer() {
-	a.srv = server.NewServer(":"+os.Getenv("PORT"), a.cfg.router.Mux)
+	a.srv = server.NewServer(
+		":"+os.Getenv("PORT"),
+		a.cfg.router.Mux,
+		server.WithReadTimeout(constant.ServerReadTimeout*time.Second),
+		server.WithReadHeaderTimeout(constant.ServerReadHeaderTimeout*time.Second),
+		server.WithWriteTimeout(constant.ServerWriteTimeout*time.Second),
+	)
 }
 
 // configureGracefulShutdown configures graceful shutdown
