@@ -5,7 +5,7 @@
 MAX_SIZE=5000000 # 5 MB
 
 # Loop through staged files
-git diff --cached --name-only | while IFS= read -r file; do
+for file in $(git diff --cached --name-only); do
   # Check if the file exists in the Git index
   if [ -f "$file" ]; then
     # Get the size of the staged file content

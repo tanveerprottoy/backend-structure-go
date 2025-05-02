@@ -1,7 +1,5 @@
 #!/bin/sh
 
-#!/bin/sh
-
 # Check code formatting with gofmt
 echo "Running gofmt..."
 UNFORMATTED_FILES=$(gofmt -l .)
@@ -19,7 +17,7 @@ if ! go vet ./...; then
   exit 1
 fi
 
-echo "Pre-commit checks passed."
+echo "Pre-push checks passed."
 exit 0
 
 # lint check with golangci
