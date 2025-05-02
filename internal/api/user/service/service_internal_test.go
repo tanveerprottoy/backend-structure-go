@@ -67,15 +67,15 @@ func TestService(t *testing.T) {
 			},
 		}
 
-		for _, test := range tests {
+		for _, tc := range tests {
 			// run test in a sub test
-			t.Run(test.name, func(t *testing.T) {
+			t.Run(tc.name, func(t *testing.T) {
 				e, err := s.readOneInternal(context.Background(), id)
 				if err != nil {
 					t.Error(err)
 				}
 
-				if e.ID != test.expected {
+				if e.ID != tc.expected {
 					t.Error("id is not equal")
 				}
 			})

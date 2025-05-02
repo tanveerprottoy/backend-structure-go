@@ -56,16 +56,18 @@ func TestService(t *testing.T) {
 			},
 		}
 
-		for i, test := range tests {
+		for i, tc := range tests {
 			// run test in a sub test
-			t.Run(test.name, func(t *testing.T) {
-				e, err := s.Create(context.Background(), test.dto)
+			t.Run(tc.name, func(t *testing.T) {
+				e, err := s.Create(context.Background(), tc.dto)
 				if err != nil {
 					t.Error(err)
 				}
-				if e.Name != test.expected.Name {
+
+				if e.Name != tc.expected.Name {
 					t.Error("name does not match")
 				}
+
 				insertedIDs[i] = e.ID
 			})
 		}
@@ -90,19 +92,22 @@ func TestService(t *testing.T) {
 			},
 		}
 
-		for _, test := range tests {
+		for _, tc := range tests {
 			// run test in a sub test
-			t.Run(test.name, func(t *testing.T) {
+			t.Run(tc.name, func(t *testing.T) {
 				d, err := s.ReadMany(context.Background(), 10, 1)
 				if err != nil {
 					t.Error(err)
 				}
+
 				l := len(d)
+				
 				if l == 0 {
 					t.Error("no date returned")
 				}
-				if l != test.expected {
-					t.Errorf("expected item count %d, got %d", l, test.expected)
+
+				if l != tc.expected {
+					t.Errorf("expected item count %d, got %d", l, tc.expected)
 				}
 			})
 		}
@@ -129,14 +134,15 @@ func TestService(t *testing.T) {
 			},
 		}
 
-		for _, test := range tests {
+		for _, tc := range tests {
 			// run test in a sub test
-			t.Run(test.name, func(t *testing.T) {
+			t.Run(tc.name, func(t *testing.T) {
 				e, err := s.ReadOne(context.Background(), id)
 				if err != nil {
 					t.Error(err)
 				}
-				if e.ID != test.expected {
+				
+				if e.ID != tc.expected {
 					t.Error("id is not equal")
 				}
 			})
@@ -180,14 +186,15 @@ func TestService(t *testing.T) {
 		// simulate failure by supplying wrong id
 		ids := [2]string{insertedIDs[0], constant.FakeUUID}
 
-		for i, test := range tests {
+		for i, tc := range tests {
 			// run test in a sub test
-			t.Run(test.name, func(t *testing.T) {
-				e, err := s.Update(context.Background(), ids[i], test.dto)
+			t.Run(tc.name, func(t *testing.T) {
+				e, err := s.Update(context.Background(), ids[i], tc.dto)
 				if err != nil {
 					t.Error(err)
 				}
-				if e.ID != test.expected.ID {
+
+				if e.ID != tc.expected.ID {
 					t.Error("id does not match")
 				}
 			})
@@ -216,14 +223,15 @@ func TestService(t *testing.T) {
 			},
 		}
 
-		for i, test := range tests {
+		for i, tc := range tests {
 			// run test in a sub test
-			t.Run(test.name, func(t *testing.T) {
+			t.Run(tc.name, func(t *testing.T) {
 				e, err := s.Delete(context.Background(), ids[i])
 				if err != nil {
 					t.Error(err)
 				}
-				if e.ID != test.expected.ID {
+
+				if e.ID != tc.expected.ID {
 					t.Error("id does not match")
 				}
 			})

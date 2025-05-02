@@ -1,5 +1,8 @@
+BIN_DIR = ./bin
+APP_PATH = ./cmd/api/main.go
+
 build:
-	go build -o ./bin/app ./cmd/api/main.go
+	go build -o .$(BIN_DIR)/app $(APP_PATH)
 
 run:
-	go run ./cmd/api/main.go
+	go run $(APP_PATH)
