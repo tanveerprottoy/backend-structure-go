@@ -4,8 +4,8 @@
 # to git diff in the script can include the hash from the submodules. This error can be ignored.
 # fatal: git cat-file: could not get object info
 
-commitlimit=$(git config hooks.filesizehardlimit)
-filelimit=$(git config hooks.filesizehardlimit)
+commitlimit=5
+filelimit=5
 : ${commitlimit:=10}
 : ${filelimit:=10}
 
