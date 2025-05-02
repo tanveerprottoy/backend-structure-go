@@ -1,45 +1,48 @@
 #!/bin/sh
 
-# Configuration
-MAX_FILE_SIZE_MB=5  # Set your maximum file size in megabytes
+# There is a known issue if using submodules. You can see the error below. This is due
+# to git diff in the script can include the hash from the submodules. This error can be ignored.
+# fatal: git cat-file: could not get object info
 
-MAX_FILE_SIZE_BYTES=$((MAX_FILE_SIZE_MB * 1024 * 1024))
+commitlimit=$(git config hooks.filesizehardlimit)
+filelimit=$(git config hooks.filesizehardlimit)
+: ${commitlimit:=10}
+: ${filelimit:=10}
 
-# Function to check if a file exceeds the size limit
-check_file_size() {
-  local filepath="$1"
-  local size=$(git cat-file -s "$filepath")
-  if [ "$size" -gt "$MAX_FILE_SIZE_BYTES" ]; then
-    echo "Error: File '$filepath' exceeds the maximum allowed size of $MAX_FILE_SIZE_MB MB."
-    return 1 # Indicate failure
-  fi
-  return 0 # Indicate success
+list_new_or_modified_files()
+{
+    # Only get the file name.  Do not get deleted files.
+    git diff --staged --name-only --diff-filter=ACMRTUXB
 }
 
-# Get a list of all staged files
-staged_files=$(git diff --cached --name-only)
+unmunge()
+{
+    local result="${1#\"}"
+    result="${result%\"}"
+    env echo "$result"
+}
 
-# Check files in the root directory
-echo "Checking root directory files..."
-for file in $staged_files; do
-  # Check if the file is directly in the root
-  if [[ "$file" != */* ]]; then
-    if check_file_size "$file"; then
-      exit 1
+check_file_size()
+{
+    n=0
+    while read -r munged_filename
+    do
+        f="$(unmunge "$munged_filename")"
+        h=$(git ls-files -s "$f"|cut -d' ' -f 2)
+        s=$(git cat-file -s "$h")
+        if [[ "$s" -gt $filelimit ]]
+        then
+            env echo 1>&2 "ERROR: size limit ($filelimit) exceeded: $munged_filename ($s)"
+            n=$((n+1))
+        fi
+        fs=$(($fs+$s))
+    done
+    if [[ "$fs" -gt $limit ]]
+    then
+       env echo 1>&2 "ERROR: hard size limit ($commitlimit) bytes exceeded: $munged_filename ($fs)"
     fi
-  fi
-done
+    [ $n -eq 0 ]
+}
 
-# Check files within all subdirectories
-echo "Checking files in all subdirectories..."
-for file in $staged_files; do
-  # Check if the file is in a subdirectory
-  if [[ "$file" == */* ]]; then
-    if check_file_size "$file"; then
-      exit 1
-    fi
-  fi
-done
-
-echo "Pre commit check passed"
-exit 0
+list_new_or_modified_files | check_file_size
+exit $n
