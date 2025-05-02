@@ -4,8 +4,16 @@
 # the commit to fail
 MAX_SIZE=5000000 # 5 MB
 
+# Get the list of staged files
+STAGED_FILES=$(git diff --cached --name-only)
+
+# Exit if no files are staged
+if [ -z "$STAGED_FILES" ]; then
+  exit 0
+fi
+
 # Loop through staged files
-for file in $(git diff --cached --name-only); do
+for file in $STAGED_FILES; do
   # Check if the file exists in the Git index
   if [ -f "$file" ]; then
     # Get the size of the staged file content
