@@ -71,7 +71,7 @@ func RespondError(w http.ResponseWriter, code int, payload *ErrorResponse) (int,
 func Respond(w http.ResponseWriter, code int, payload any) (int, error) {
 	res, err := json.Marshal(payload)
 	if err != nil {
-		RespondError(w, http.StatusInternalServerError, &ErrorResponse{Errors: []Error{makeError(constant.InternalServerError)}})
+		_, _ = RespondError(w, http.StatusInternalServerError, &ErrorResponse{Errors: []Error{makeError(constant.InternalServerError)}})
 		return -1, err
 	}
 
