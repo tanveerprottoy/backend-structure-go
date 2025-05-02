@@ -67,7 +67,7 @@ func (s *Server) Shutdown() {
 func (s *Server) ConfigureGracefulShutdown(defferedFunc func()) {
 	// code to support graceful shutdown
 	s.idleConnsClosed = make(chan struct{})
-	
+
 	go func() {
 		// this func listens for SIGINT and initiates
 		// shutdown when SIGINT is received

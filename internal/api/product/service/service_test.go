@@ -101,7 +101,7 @@ func TestService(t *testing.T) {
 				}
 
 				l := len(d)
-				
+
 				if l == 0 {
 					t.Error("no date returned")
 				}
@@ -141,7 +141,7 @@ func TestService(t *testing.T) {
 				if err != nil {
 					t.Error(err)
 				}
-				
+
 				if e.ID != tc.expected {
 					t.Error("id is not equal")
 				}

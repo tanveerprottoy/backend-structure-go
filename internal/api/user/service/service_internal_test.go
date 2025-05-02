@@ -43,7 +43,7 @@ func TestService(t *testing.T) {
 			if err != nil {
 				t.Skip(err)
 			}
-			
+
 			insertedIDs[i] = e.ID
 		}
 

@@ -2,10 +2,8 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/delivery/http/dto"
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/product"
@@ -71,7 +69,7 @@ func (h *Product) ReadMany(w http.ResponseWriter, r *http.Request) {
 	response.RespondError(w, http.StatusBadRequest, response.NewErrorResponse(constant.ErrorSingle, []error{errors.New("bad request")}))
 	return
 
-	limit := 10
+	/* limit := 10
 	page := 1
 	var err error
 
@@ -119,7 +117,7 @@ func (h *Product) ReadMany(w http.ResponseWriter, r *http.Request) {
 	_, err = response.Respond(w, http.StatusOK, response.NewResponse(&res))
 	if err != nil {
 		log.Printf("response.Respond returned error: %v", err)
-	}
+	} */
 }
 
 func (h *Product) ReadOne(w http.ResponseWriter, r *http.Request) {

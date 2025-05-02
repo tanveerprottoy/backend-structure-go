@@ -37,7 +37,7 @@ func BuildCustomError(err error) error {
 	if ok {
 		return &customErr
 	}
-	
+
 	// return custom error with code
 	return NewCustomError(http.StatusInternalServerError, err)
 }

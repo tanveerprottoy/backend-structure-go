@@ -74,7 +74,7 @@ func TestService(t *testing.T) {
 				if err != nil {
 					t.Error(err)
 				}
-				
+
 				if e.ID != tc.expected {
 					t.Error("id is not equal")
 				}

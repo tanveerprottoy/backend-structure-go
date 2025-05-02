@@ -34,6 +34,6 @@ func (p Product) Validate() error {
 	if p.Name == "" {
 		return errors.New("name required")
 	}
-	
+
 	return nil
 }
