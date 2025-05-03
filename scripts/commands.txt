@@ -1,0 +1,2 @@
+# create a 20 MB file
+dd if=/dev/zero of=lrg.txt bs=1M count=20

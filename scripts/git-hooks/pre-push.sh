@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# This script is a pre-push hook that checks for common issues before pushing code.
+
 # Check code formatting with gofmt
 echo "Running gofmt..."
 UNFORMATTED_FILES=$(gofmt -l .)
@@ -7,6 +9,7 @@ if [ -n "$UNFORMATTED_FILES" ]; then
   echo "Error: The following files are not properly formatted:"
   echo "$UNFORMATTED_FILES"
   echo "Run 'gofmt -w .' to format the code."
+  
   exit 1
 fi
 

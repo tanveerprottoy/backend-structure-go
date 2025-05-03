@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# This script is a commit-msg hook that checks the commit message for certain criteria.
+# It ensures that the commit message is not empty and is longer than 5 characters.
+
 # Get the commit message
 COMMIT_MSG_FILE=$1
 COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
