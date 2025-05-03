@@ -8,7 +8,8 @@ UNFORMATTED_FILES=$(gofmt -l .)
 if [ -n "$UNFORMATTED_FILES" ]; then
   echo "Error: The following files are not properly formatted:"
   echo "$UNFORMATTED_FILES"
-  echo "Run 'gofmt -w .' to format the code."
+  echo "Run 'gofmt -w .' to format the code"
+  echo "push aborted"
   
   exit 1
 fi
@@ -16,11 +17,13 @@ fi
 # Run go vet for static analysis
 echo "Running go vet..."
 if ! go vet ./...; then
-  echo "Error: go vet found issues in the code."
+  echo "Error: go vet found issues in the code"
+  echo "push aborted"
+
   exit 1
 fi
 
-echo "Pre-push checks passed."
+echo "Pre-push checks passed"
 exit 0
 
 # lint check with golangci

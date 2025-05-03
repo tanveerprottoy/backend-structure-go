@@ -34,8 +34,8 @@ for file in $(git diff-index --cached --name-only "$against"); do
         # Check if the file size exceeds the limit
         if [ "$file_size" -gt "$limit" ]; then
             echo "File $file is $((file_size / 1000000)) MB, which is larger than our configured limit of $limit_in_mb MB"
-            echo "If you really need to commit this file, you can override the size limit by setting the GIT_FILE_SIZE_LIMIT environment variable, e.g. GIT_FILE_SIZE_LIMIT=20000000 for 20MB. Or, commit with the --no-verify switch to skip the check entirely."
-            echo "Commit aborted"
+            echo "If you really need to commit this file, you can override the size limit by setting the GIT_FILE_SIZE_LIMIT environment variable, e.g. GIT_FILE_SIZE_LIMIT=20000000 for 20MB. Or, commit with the --no-verify switch to skip the check entirely"
+            echo "commit aborted"
 
             exit 1
         fi
