@@ -1,53 +1,30 @@
-package api
+package e2e
 
 import (
-	"os"
+	"database/sql"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/tanveerprottoy/backend-structure-go/pkg/env"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/router"
-	"github.com/tanveerprottoy/backend-structure-go/pkg/sqlext"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/validatorext"
 )
 
 // config contains the components of the application
 // and configures them as required
 type config struct {
-	dbClient  *sqlext.Client
+	db        *sql.DB
 	router    *router.Router
 	validater validatorext.Validater
 }
 
-func NewConfig() *config {
-	c := new(config)
-	c.loadEnv()
-	c.initDB()
+func NewConfig(db *sql.DB) *config {
+	c := &config{db: db}
 	c.initRouter()
 	c.initValidator()
 
-	// init components
+	// Initialize components
 	initComponents(c)
 
 	return c
-}
-
-// loadEnv initializes env
-func (c *config) loadEnv() {
-	env.LoadEnv("")
-}
-
-// initDB initializes DB client
-func (c *config) initDB() {
-	opts := sqlext.Config{
-		Host:     os.Getenv("DB_HOST"),
-		Port:     os.Getenv("DB_PORT"),
-		Username: os.Getenv("DB_USERNAME"),
-		Password: os.Getenv("DB_PASS"),
-		DBName:   os.Getenv("DB_NAME"),
-		SSLMode:  os.Getenv("DB_SSL_MODE"),
-	}
-
-	c.dbClient = sqlext.GetInstance(opts)
 }
 
 // initRouter initializes router

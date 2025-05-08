@@ -1,4 +1,4 @@
-package api
+package e2e
 
 import (
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/delivery/http/handler"

@@ -10,7 +10,7 @@ import (
 
 // App contains the configuration and server
 type App struct {
-	cfg *Config
+	cfg *config
 	srv *server.Server
 }
 
@@ -36,7 +36,7 @@ func (a *App) initServer() {
 // configureGracefulShutdown configures graceful shutdown
 func (a *App) configureGracefulShutdown() {
 	a.srv.ConfigureGracefulShutdown(func() {
-		a.cfg.DBClient.Close()
+		a.cfg.dbClient.Close()
 	})
 }
 

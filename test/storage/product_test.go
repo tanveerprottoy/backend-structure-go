@@ -4,18 +4,18 @@ import (
 	"context"
 	"testing"
 
-	"github.com/tanveerprottoy/backend-structure-go/internal/api/user"
-	"github.com/tanveerprottoy/backend-structure-go/internal/api/user/postgres"
+	"github.com/tanveerprottoy/backend-structure-go/internal/api/product"
+	"github.com/tanveerprottoy/backend-structure-go/internal/api/product/postgres"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/timeext"
 )
 
-func TestUser(t *testing.T) {
+func TestProduct(t *testing.T) {
 	// init storage
 	s := postgres.NewStorage(db)
 	// Mock data
 	n := timeext.NowUnix()
 
-	addr := "test address"
+	description := "test description"
 
 	var id string
 
@@ -23,9 +23,9 @@ func TestUser(t *testing.T) {
 	t.Run("create", func(t *testing.T) {
 		// t.Parallel()
 
-		dto := &user.CreateDTO{
+		dto := &product.CreateDTO{
 			Name:    "Test",
-			Address: &addr,
+			Description: &description,
 		}
 
 		// call create
@@ -64,7 +64,7 @@ func TestUser(t *testing.T) {
 	t.Run(("update"), func(t *testing.T) {
 		// t.Parallel()
 
-		dto := &user.UpdateDTO{
+		dto := &product.UpdateDTO{
 			Name: "test 2",
 		}
 

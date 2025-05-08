@@ -1,4 +1,4 @@
-package api
+package e2e
 
 import (
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/delivery/http/handler"
@@ -8,9 +8,9 @@ import (
 
 // initComponents initializes application components
 func initComponents(cfg *config) {
-	product := productcfg.NewConfig(cfg.dbClient.DB())
+	product := productcfg.NewConfig(cfg.db)
 
-	user := usercfg.NewConfig(cfg.dbClient.DB())
+	user := usercfg.NewConfig(cfg.db)
 
 	initRoutes(
 		cfg.router,

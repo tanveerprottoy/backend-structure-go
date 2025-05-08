@@ -17,4 +17,4 @@ services:
     - DB_NAME=
     - DB_SSL_MODE=
     - ALLOWED_ORIGIN=
-    env_file: .env
+    env_file: ./deploy.env
