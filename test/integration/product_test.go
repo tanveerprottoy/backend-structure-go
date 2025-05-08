@@ -26,21 +26,21 @@ func TestProduct(t *testing.T) {
 	// Mock data
 	n := timeext.NowUnix()
 
-	addr := "test address"
+	desc := "test description"
 
-	e := product.User{
-		Name:      "Test",
-		Address:   &addr,
-		CreatedAt: n,
-		UpdatedAt: n,
+	e := product.Product{
+		Name:        "Test",
+		Description: &desc,
+		CreatedAt:   n,
+		UpdatedAt:   n,
 	}
 
 	// build test table data
 	/* var tests = []struct {
 		name string
-		data product.User
-		expected product.User
-		got product.User
+		data product.Product
+		expected product.Product
+		got product.Product
 	}{
 		{
 			name: "Create",
@@ -64,7 +64,7 @@ func TestProduct(t *testing.T) {
 			t.Errorf("expected status code %d, got %d", http.StatusCreated, res.StatusCode)
 		}
 
-		var resBody response.Response[product.User]
+		var resBody response.Response[product.Product]
 		if err := json.NewDecoder(res.Body).Decode(&resBody); err != nil {
 			t.Errorf("decode response body: %v", err)
 		}
@@ -90,7 +90,7 @@ func TestProduct(t *testing.T) {
 			t.Errorf("expected status code %d, got %d", http.StatusOK, res.StatusCode)
 		}
 
-		var resBody response.Response[response.ReadManyResponse[product.User]]
+		var resBody response.Response[response.ReadManyResponse[product.Product]]
 		if err := json.NewDecoder(res.Body).Decode(&resBody); err != nil {
 			t.Errorf("decode response body: %v", err)
 		}
@@ -104,7 +104,7 @@ func TestProduct(t *testing.T) {
 
 	t.Run(("readOne"), func(t *testing.T) {
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/{id}", nil)		
+		r := httptest.NewRequest(http.MethodGet, "/{id}", nil)
 		// add path param
 		r = addPathParam(r, "id", e.ID)
 
@@ -118,7 +118,7 @@ func TestProduct(t *testing.T) {
 			t.Errorf("expected status code %d, got %d", http.StatusOK, res.StatusCode)
 		}
 
-		var resBody response.Response[product.User]
+		var resBody response.Response[product.Product]
 		if err := json.NewDecoder(res.Body).Decode(&resBody); err != nil {
 			t.Errorf("decode response body: %v", err)
 		}
@@ -145,7 +145,7 @@ func TestProduct(t *testing.T) {
 			t.Errorf("expected status code %d, got %d", http.StatusOK, res.StatusCode)
 		}
 
-		var resBody response.Response[product.User]
+		var resBody response.Response[product.Product]
 		if err := json.NewDecoder(res.Body).Decode(&resBody); err != nil {
 			t.Errorf("decode response body: %v", err)
 		}
@@ -170,7 +170,7 @@ func TestProduct(t *testing.T) {
 			t.Errorf("expected status code %d, got %d", http.StatusOK, res.StatusCode)
 		}
 
-		var resBody response.Response[product.User]
+		var resBody response.Response[product.Product]
 		if err := json.NewDecoder(res.Body).Decode(&resBody); err != nil {
 			t.Errorf("decode response body: %v", err)
 		}

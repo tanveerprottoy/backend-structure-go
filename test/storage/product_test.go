@@ -24,7 +24,7 @@ func TestProduct(t *testing.T) {
 		// t.Parallel()
 
 		dto := &product.CreateDTO{
-			Name:    "Test",
+			Name:        "Test",
 			Description: &description,
 		}
 

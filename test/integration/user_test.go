@@ -104,7 +104,7 @@ func TestUser(t *testing.T) {
 
 	t.Run(("readOne"), func(t *testing.T) {
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/{id}", nil)		
+		r := httptest.NewRequest(http.MethodGet, "/{id}", nil)
 		// add path param
 		r = addPathParam(r, "id", e.ID)
 
