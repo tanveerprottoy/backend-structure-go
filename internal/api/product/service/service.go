@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/product"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/constant"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/errorext"
-	"github.com/tanveerprottoy/backend-structure-go/pkg/timeext"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/util"
 )
 
@@ -37,7 +37,7 @@ func (s *service) readOneInternal(ctx context.Context, id string) (product.Produ
 // create defines the business logic for create post request
 func (s *service) Create(ctx context.Context, dto *product.CreateDTO) (product.Product, error) {
 	// build entity
-	n := timeext.NowUnix()
+	n := time.Now().Unix()
 
 	dto.CreatedAt = n
 	dto.UpdatedAt = n
@@ -100,7 +100,7 @@ func (s *service) Delete(ctx context.Context, id string) (product.Product, error
 		return e, err
 	}
 
-	n := timeext.NowUnix()
+	n := time.Now().Unix()
 	rowCount, err := s.repository.Delete(ctx, id, n)
 	if err != nil {
 		return e, errorext.BuildCustomError(err)

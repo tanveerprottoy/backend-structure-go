@@ -6,3 +6,6 @@ build:
 
 run:
 	go run $(APP_PATH)
+
+test-all:
+	go test -v ./...

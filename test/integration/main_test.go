@@ -42,7 +42,7 @@ func startPostgresContainer(ctx context.Context) (testcontainers.Container, stri
 		postgres.WithDatabase("dummy_ecommerce_db"),
 		postgres.WithUsername("postgres"),
 		postgres.WithPassword("postgres"),
-		postgres.WithInitScripts(filepath.Join("..", "..", "seeds", "init_test.sql")),
+		postgres.WithInitScripts(filepath.Join("..", "..", "scripts", "db", "init_test.sql")),
 		testcontainers.WithWaitStrategy(
 			wait.ForLog("database system is ready to accept connections").
 				WithOccurrence(2).WithStartupTimeout(5*time.Second)),

@@ -7,13 +7,13 @@ import (
 	"net/http/httptest"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/delivery/http/handler"
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/user"
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/user/postgres"
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/user/service"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/response"
-	"github.com/tanveerprottoy/backend-structure-go/pkg/timeext"
 )
 
 func TestUser(t *testing.T) {
@@ -24,7 +24,7 @@ func TestUser(t *testing.T) {
 	// init handler
 	h := handler.NewUser(s, validater)
 	// Mock data
-	n := timeext.NowUnix()
+	n := time.Now().Unix()
 
 	addr := "test address"
 

@@ -7,13 +7,13 @@ import (
 	"net/http/httptest"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/delivery/http/handler"
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/product"
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/product/postgres"
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/product/service"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/response"
-	"github.com/tanveerprottoy/backend-structure-go/pkg/timeext"
 )
 
 func TestProduct(t *testing.T) {
@@ -24,7 +24,7 @@ func TestProduct(t *testing.T) {
 	// init handler
 	h := handler.NewProduct(s, validater)
 	// Mock data
-	n := timeext.NowUnix()
+	n := time.Now().Unix()
 
 	desc := "test description"
 

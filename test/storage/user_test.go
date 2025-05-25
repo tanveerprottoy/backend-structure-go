@@ -3,17 +3,17 @@ package storage
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/user"
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/user/postgres"
-	"github.com/tanveerprottoy/backend-structure-go/pkg/timeext"
 )
 
 func TestUser(t *testing.T) {
 	// init storage
 	s := postgres.NewStorage(db)
 	// Mock data
-	n := timeext.NowUnix()
+	n := time.Now().Unix()
 
 	addr := "test address"
 

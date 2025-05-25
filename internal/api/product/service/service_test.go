@@ -24,7 +24,7 @@ func TestService(t *testing.T) {
 	var insertedIDs [2]string
 
 	// initiate the tests in sub tests
-	t.Run("create", func(t *testing.T) {
+	t.Run("Create", func(t *testing.T) {
 		descrption := "description 1"
 
 		tests := [2]struct {
@@ -36,7 +36,7 @@ func TestService(t *testing.T) {
 				name: "success",
 				dto: &product.CreateDTO{
 					Name:        "name 1",
-					Description: nil,
+					Description: &descrption,
 				},
 				expected: product.Product{
 					Name:        "name 1",
@@ -73,7 +73,7 @@ func TestService(t *testing.T) {
 		}
 	})
 
-	t.Run("readMany", func(t *testing.T) {
+	t.Run("ReadMany", func(t *testing.T) {
 		if len(insertedIDs) == 0 {
 			t.Skip("no inserted id found, skipping test")
 		}

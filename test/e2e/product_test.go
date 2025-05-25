@@ -9,26 +9,28 @@ import (
 	"testing"
 	"time"
 
+	"github.com/tanveerprottoy/backend-structure-go/internal/api/product"
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/user"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/constant"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/httpext"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/response"
 )
 
-func TestUser(t *testing.T) {
+func TestProduct(t *testing.T) {
 	ctx := context.Background()
 
-	addrs := "test address"
+	desc := "test description"
 
 	// Mock data
 	n := time.Now().Unix()
 
-	e := user.User{
-		Name:      "Test",
-		Address:   &addrs,
-		CreatedAt: n,
-		UpdatedAt: n,
+	e := product.Product{
+		Name:        "Test",
+		Description: &desc,
+		CreatedAt:   n,
+		UpdatedAt:   n,
 	}
+
 	// build test table data
 	/* var tests = []struct {
 		name string

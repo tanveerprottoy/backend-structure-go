@@ -1,5 +1,5 @@
 # build stage
-FROM golang:1.22-bookworm AS build
+FROM golang:1.24-bookworm AS build
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ COPY --from=build ./app/app ./app
 
 EXPOSE 8080
 
-# needed for distroless base
+# needed for distroless base image
 USER nonroot:nonroot
 
 ENTRYPOINT [ "./app" ]

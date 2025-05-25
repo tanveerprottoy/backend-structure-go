@@ -53,7 +53,7 @@ func (s *storage) ReadMany(ctx context.Context, limit, offset int, args ...any) 
 	q := fmt.Sprintf("SELECT id, name, address, is_archived, created_at, updated_at FROM %s", tableName)
 	vals := make([]any, 0)
 
-	if args[0] != nil {
+	if len(args) > 0 && args[0] != nil {
 		q += " WHERE is_archived = $1"
 		vals = append(vals, args[0].(bool))
 	}
