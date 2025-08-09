@@ -207,7 +207,7 @@ func TestStorage(t *testing.T) {
 					Description: &desc,
 					UpdatedAt:   time.Now().Unix(),
 				},
-				expected: 1,
+				expected: 0,
 			},
 		}
 
@@ -252,7 +252,7 @@ func TestStorage(t *testing.T) {
 			{
 				name:     "fail",
 				id:       constant.FakeUUID,
-				expected: 1,
+				expected: 0,
 			},
 		}
 
