@@ -8,6 +8,11 @@ import (
 	"net/http"
 )
 
+type BasicAuth struct {
+	UserName string
+	Password string
+}
+
 func newRequest(
 	ctx context.Context,
 	method, url string,
@@ -26,6 +31,31 @@ func newRequest(
 	return req, nil
 }
 
+func newRequestWithBasicAuth(
+	ctx context.Context,
+	method, url string,
+	header http.Header,
+	body io.Reader,
+	basicAuth *BasicAuth,
+) (*http.Request, error) {
+	req, err := http.NewRequestWithContext(ctx, method, url, body)
+	if err != nil {
+		return nil, err
+	}
+
+	if header != nil {
+		req.Header = header
+	}
+
+	if basicAuth == nil {
+		return nil, errors.New("basicAuth is nil")
+	}
+	// set basic auth
+	req.SetBasicAuth(basicAuth.UserName, basicAuth.Password)
+
+	return req, nil
+}
+
 // Request is a generic function to make a request with context
 // Generic parameters: R = response type, E = error type
 // use this function when you want to parse the response body to a specific type
@@ -39,6 +69,7 @@ func Request[R, E any](
 	header http.Header,
 	body io.Reader,
 	retry bool,
+	basicAuth *BasicAuth,
 ) (*R, *E, error) {
 	if ctx == nil {
 		var cancel context.CancelFunc
@@ -46,7 +77,16 @@ func Request[R, E any](
 		defer cancel()
 	}
 
-	req, err := newRequest(ctx, method, url, header, body)
+	var (
+		req *http.Request
+		err error
+	)
+
+	if basicAuth != nil {
+		req, err = newRequestWithBasicAuth(ctx, method, url, header, body, basicAuth)
+	} else {
+		req, err = newRequest(ctx, method, url, header, body)
+	}
 	if err != nil {
 		return nil, nil, err
 	}
@@ -92,8 +132,18 @@ func RequestRaw(
 	header http.Header,
 	body io.Reader,
 	retry bool,
+	basicAuth *BasicAuth,
 ) (int, []byte, error) {
-	req, err := newRequest(ctx, method, url, header, body)
+	var (
+		req *http.Request
+		err error
+	)
+
+	if basicAuth != nil {
+		req, err = newRequestWithBasicAuth(ctx, method, url, header, body, basicAuth)
+	} else {
+		req, err = newRequest(ctx, method, url, header, body)
+	}
 	if err != nil {
 		return 0, nil, err
 	}
