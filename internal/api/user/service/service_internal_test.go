@@ -26,7 +26,7 @@ func TestService(t *testing.T) {
 
 		address := "address 1"
 
-		dtos := []*user.CreateDTO{
+		dtos := []user.CreateDTO{
 			{
 				Name:    "name 1",
 				Address: nil,

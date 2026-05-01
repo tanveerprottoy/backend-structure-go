@@ -22,14 +22,14 @@ func NewStorage(db *sql.DB) *storage {
 	return &storage{db: db}
 }
 
-func (s *storage) Create(ctx context.Context, dto *product.CreateDTO, args ...any) (string, error) {
+func (s *storage) Create(ctx context.Context, payload product.CreateDTO, args ...any) (string, error) {
 	var lastID string
 
 	// build insert query
 	q := sqlext.BuildInsertQuery(tableName, []string{"name", "description", "created_at", "updated_at"}, "RETURNING id")
 
 	// execute the query
-	row := s.db.QueryRowContext(ctx, q, dto.Name, dto.Description, dto.CreatedAt, dto.UpdatedAt)
+	row := s.db.QueryRowContext(ctx, q, payload.Name, payload.Description, payload.CreatedAt, payload.UpdatedAt)
 	err := row.Err()
 	if err != nil {
 		log.Printf("err: %v", err)
@@ -120,10 +120,10 @@ func (s *storage) ReadOne(ctx context.Context, id string, args ...any) (product.
 	}, nil
 }
 
-func (s *storage) Update(ctx context.Context, id string, dto *product.UpdateDTO, args ...any) (int64, error) {
+func (s *storage) Update(ctx context.Context, id string, payload product.UpdateDTO, args ...any) (int64, error) {
 	q := sqlext.BuildUpdateQuery(tableName, []string{"name", "description", "updated_at"}, []string{"id"}, "")
 
-	res, err := s.db.ExecContext(ctx, q, dto.Name, dto.Description, dto.UpdatedAt, id)
+	res, err := s.db.ExecContext(ctx, q, payload.Name, payload.Description, payload.UpdatedAt, id)
 	if err != nil {
 		err := errorext.BuildDBError(err)
 		return -1, err

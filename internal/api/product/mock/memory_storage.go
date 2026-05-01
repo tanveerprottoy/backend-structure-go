@@ -18,10 +18,10 @@ func NewMemoryStorage() *MemoryStorage {
 	return &MemoryStorage{m: make(map[string]*product.Product)}
 }
 
-func (s *MemoryStorage) Create(ctx context.Context, dto *product.CreateDTO, args ...any) (string, error) {
-	s.m[dto.Name] = product.NewProduct(dto.Name, dto.Name, nil, 0, 0)
+func (s *MemoryStorage) Create(ctx context.Context, payload product.CreateDTO, args ...any) (string, error) {
+	s.m[payload.Name] = product.NewProduct(payload.Name, payload.Name, nil, 0, 0)
 
-	return dto.Name, nil
+	return payload.Name, nil
 }
 
 func (s MemoryStorage) ReadMany(ctx context.Context, limit int, offset int, args ...any) ([]product.Product, error) {
@@ -42,9 +42,9 @@ func (s MemoryStorage) ReadOne(ctx context.Context, id string, args ...any) (pro
 	return product.Product{}, errors.New("not found")
 }
 
-func (s *MemoryStorage) Update(ctx context.Context, id string, dto *product.UpdateDTO, args ...any) (int64, error) {
+func (s *MemoryStorage) Update(ctx context.Context, id string, payload product.UpdateDTO, args ...any) (int64, error) {
 	if e, ok := s.m[id]; ok {
-		e.Name = dto.Name
+		e.Name = payload.Name
 		s.m[id] = e
 
 		return 1, nil

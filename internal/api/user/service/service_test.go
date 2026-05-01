@@ -29,12 +29,12 @@ func TestService(t *testing.T) {
 
 		tests := [2]struct {
 			name     string
-			dto      *user.CreateDTO
+			dto      user.CreateDTO
 			expected user.User
 		}{
 			{
 				name: "success",
-				dto: &user.CreateDTO{
+				dto: user.CreateDTO{
 					Name:    "name 1",
 					Address: nil,
 				},
@@ -45,7 +45,7 @@ func TestService(t *testing.T) {
 			},
 			{
 				name: "fail",
-				dto: &user.CreateDTO{
+				dto: user.CreateDTO{
 					Name:    "name 2",
 					Address: nil,
 				},
@@ -154,12 +154,12 @@ func TestService(t *testing.T) {
 
 		tests := [2]struct {
 			name     string
-			dto      *user.UpdateDTO
+			dto      user.UpdateDTO
 			expected user.User
 		}{
 			{
 				name: "success",
-				dto: &user.UpdateDTO{
+				dto: user.UpdateDTO{
 					Name:    "updated name 1",
 					Address: nil,
 				},
@@ -171,7 +171,7 @@ func TestService(t *testing.T) {
 			},
 			{
 				name: "fail",
-				dto: &user.UpdateDTO{
+				dto: user.UpdateDTO{
 					Name:    "updated name 2",
 					Address: nil,
 				},

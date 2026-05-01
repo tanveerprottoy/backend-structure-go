@@ -23,7 +23,7 @@ func TestProduct(t *testing.T) {
 	t.Run("create", func(t *testing.T) {
 		// t.Parallel()
 
-		dto := &product.CreateDTO{
+		dto := product.CreateDTO{
 			Name:        "Test",
 			Description: &description,
 		}
@@ -64,7 +64,7 @@ func TestProduct(t *testing.T) {
 	t.Run(("update"), func(t *testing.T) {
 		// t.Parallel()
 
-		dto := &product.UpdateDTO{
+		dto := product.UpdateDTO{
 			Name: "test 2",
 		}
 

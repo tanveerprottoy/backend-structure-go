@@ -35,24 +35,24 @@ func (s *service) readOneInternal(ctx context.Context, id string) (user.User, er
 }
 
 // create defines the business logic for create post request
-func (s *service) Create(ctx context.Context, dto *user.CreateDTO) (user.User, error) {
+func (s *service) Create(ctx context.Context, payload user.CreateDTO) (user.User, error) {
 	// build entity
 	n := time.Now().Unix()
 
-	dto.CreatedAt = n
-	dto.UpdatedAt = n
+	payload.CreatedAt = n
+	payload.UpdatedAt = n
 
-	l, err := s.repository.Create(ctx, dto)
+	l, err := s.repository.Create(ctx, payload)
 	if err != nil {
 		return user.User{}, errorext.BuildCustomError(err)
 	}
 
 	return user.MakeUser(
 		l,
-		dto.Name,
-		dto.Address,
-		dto.CreatedAt,
-		dto.UpdatedAt,
+		payload.Name,
+		payload.Address,
+		payload.CreatedAt,
+		payload.UpdatedAt,
 	), nil
 }
 
@@ -76,15 +76,15 @@ func (s *service) ReadOne(ctx context.Context, id string) (user.User, error) {
 	return e, nil
 }
 
-func (s *service) Update(ctx context.Context, id string, dto *user.UpdateDTO) (user.User, error) {
+func (s *service) Update(ctx context.Context, id string, payload user.UpdateDTO) (user.User, error) {
 	e, err := s.readOneInternal(ctx, id)
 	if err != nil {
 		return e, err
 	}
 
-	dto.UpdatedAt = time.Now().Unix()
+	payload.UpdatedAt = time.Now().Unix()
 
-	rowCount, err := s.repository.Update(ctx, id, dto)
+	rowCount, err := s.repository.Update(ctx, id, payload)
 	if err != nil {
 		return e, errorext.BuildCustomError(err)
 	}
@@ -92,10 +92,10 @@ func (s *service) Update(ctx context.Context, id string, dto *user.UpdateDTO) (u
 	if rowCount > 0 {
 		return user.MakeUser(
 			id,
-			dto.Name,
-			dto.Address,
+			payload.Name,
+			payload.Address,
 			e.CreatedAt,
-			dto.UpdatedAt,
+			payload.UpdatedAt,
 		), nil
 	}
 

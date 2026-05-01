@@ -11,8 +11,8 @@ type CreateUser struct {
 	Address *string `json:"description" validate:"omitempty"`
 }
 
-func (u *CreateUser) ToDomainDTO() *user.CreateDTO {
-	return &user.CreateDTO{
+func (u *CreateUser) ToDomainDTO() user.CreateDTO {
+	return user.CreateDTO{
 		Name:    u.Name,
 		Address: u.Address,
 	}
@@ -24,8 +24,8 @@ type UpdateUser struct {
 	IsArchived bool    `json:"isArchived" validate:"boolean"`
 }
 
-func (u *UpdateUser) ToDomainDTO() *user.UpdateDTO {
-	return &user.UpdateDTO{
+func (u *UpdateUser) ToDomainDTO() user.UpdateDTO {
+	return user.UpdateDTO{
 		Name:       u.Name,
 		Address:    u.Address,
 		IsArchived: u.IsArchived,

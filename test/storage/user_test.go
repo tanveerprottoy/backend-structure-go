@@ -23,7 +23,7 @@ func TestUser(t *testing.T) {
 	t.Run("create", func(t *testing.T) {
 		// t.Parallel()
 
-		dto := &user.CreateDTO{
+		dto := user.CreateDTO{
 			Name:    "Test",
 			Address: &addr,
 		}
@@ -64,7 +64,7 @@ func TestUser(t *testing.T) {
 	t.Run(("update"), func(t *testing.T) {
 		// t.Parallel()
 
-		dto := &user.UpdateDTO{
+		dto := user.UpdateDTO{
 			Name: "test 2",
 		}
 

@@ -7,8 +7,8 @@ type CreateProduct struct {
 	Description *string `json:"description" validate:"omitempty"`
 }
 
-func (p *CreateProduct) ToDomainDTO() *product.CreateDTO {
-	return &product.CreateDTO{
+func (p *CreateProduct) ToDomainDTO() product.CreateDTO {
+	return product.CreateDTO{
 		Name:        p.Name,
 		Description: p.Description,
 	}
@@ -20,8 +20,8 @@ type UpdateProduct struct {
 	IsArchived  bool    `json:"isArchived" validate:"boolean"`
 }
 
-func (p *UpdateProduct) ToDomainDTO() *product.UpdateDTO {
-	return &product.UpdateDTO{
+func (p *UpdateProduct) ToDomainDTO() product.UpdateDTO {
+	return product.UpdateDTO{
 		Name:        p.Name,
 		Description: p.Description,
 		IsArchived:  p.IsArchived,

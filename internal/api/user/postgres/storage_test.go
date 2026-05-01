@@ -38,12 +38,12 @@ func TestStorage(t *testing.T) {
 
 		tests := [2]struct {
 			name     string
-			dto      *user.CreateDTO
+			dto      user.CreateDTO
 			expected user.User
 		}{
 			{
 				name: "success",
-				dto: &user.CreateDTO{
+				dto: user.CreateDTO{
 					Name:      "Test User",
 					Address:   &addr,
 					CreatedAt: n,
@@ -56,7 +56,7 @@ func TestStorage(t *testing.T) {
 			},
 			{
 				name: "fail",
-				dto: &user.CreateDTO{
+				dto: user.CreateDTO{
 					Name:    "name 2",
 					Address: nil,
 				},
@@ -183,12 +183,12 @@ func TestStorage(t *testing.T) {
 		// test cases
 		tests := [2]struct {
 			name     string
-			dto      *user.UpdateDTO
+			dto      user.UpdateDTO
 			expected int64
 		}{
 			{
 				name: "success update 1",
-				dto: &user.UpdateDTO{
+				dto: user.UpdateDTO{
 					Name:      "updated name 1",
 					Address:   &addr,
 					UpdatedAt: time.Now().Unix(),
@@ -204,7 +204,7 @@ func TestStorage(t *testing.T) {
 			},
 			{
 				name: "success update 2",
-				dto: &user.UpdateDTO{
+				dto: user.UpdateDTO{
 
 					Name:      "updated name 2",
 					Address:   &addr,
@@ -293,7 +293,7 @@ func TestStorage_Create(t *testing.T) {
 
 	addr := "dummy address"
 
-	dto := &user.CreateDTO{
+	dto := user.CreateDTO{
 		Name:      "John",
 		Address:   &addr,
 		CreatedAt: 1234567890,

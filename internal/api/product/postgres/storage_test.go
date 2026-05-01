@@ -39,12 +39,12 @@ func TestStorage(t *testing.T) {
 
 		tests := [2]struct {
 			name     string
-			dto      *product.CreateDTO
+			dto      product.CreateDTO
 			expected product.Product
 		}{
 			{
 				name: "success 1",
-				dto: &product.CreateDTO{
+				dto: product.CreateDTO{
 					Name:        "Test Product",
 					Description: &desc,
 					CreatedAt:   n,
@@ -57,7 +57,7 @@ func TestStorage(t *testing.T) {
 			},
 			{
 				name: "success 2",
-				dto: &product.CreateDTO{
+				dto: product.CreateDTO{
 					Name:        "name 2",
 					Description: nil,
 				},
@@ -181,12 +181,12 @@ func TestStorage(t *testing.T) {
 		// test cases
 		tests := [2]struct {
 			name     string
-			dto      *product.UpdateDTO
+			dto      product.UpdateDTO
 			expected int64
 		}{
 			{
 				name: "success",
-				dto: &product.UpdateDTO{
+				dto: product.UpdateDTO{
 					Name:        "updated name 1",
 					Description: &desc,
 					UpdatedAt:   time.Now().Unix(),
@@ -202,7 +202,7 @@ func TestStorage(t *testing.T) {
 			},
 			{
 				name: "fail",
-				dto: &product.UpdateDTO{
+				dto: product.UpdateDTO{
 					Name:        "updated name 2",
 					Description: &desc,
 					UpdatedAt:   time.Now().Unix(),
