@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/product"
-	"github.com/tanveerprottoy/backend-structure-go/internal/api/user"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/constant"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/httpext"
 	"github.com/tanveerprottoy/backend-structure-go/pkg/response"
@@ -51,7 +50,7 @@ func TestProduct(t *testing.T) {
 			t.Errorf("Unexpected error: %v", err)
 		}
 
-		u, errRes, err := httpext.Request[response.Response[user.User], response.ErrorResponse](ctx, httpClient, http.MethodPost, baseURL+constant.V1+constant.UsersPattern, nil, bytes.NewReader(b), false)
+		u, errRes, err := httpext.Request[response.Response[product.Product], response.ErrorResponse](ctx, httpClient, http.MethodPost, baseURL+constant.V1+constant.ProductsPattern, nil, bytes.NewReader(b), false, nil)
 		// log.Printf("create res: %v\n", res)
 		if err != nil {
 			// check if errRes has error
@@ -66,7 +65,7 @@ func TestProduct(t *testing.T) {
 	})
 
 	t.Run(("readMany"), func(t *testing.T) {
-		resp, errRes, err := httpext.Request[response.Response[response.ReadManyResponse[user.User]], response.ErrorResponse](ctx, httpClient, http.MethodGet, baseURL+constant.V1+constant.UsersPattern, nil, nil, false)
+		resp, errRes, err := httpext.Request[response.Response[response.ReadManyResponse[product.Product]], response.ErrorResponse](ctx, httpClient, http.MethodGet, baseURL+constant.V1+constant.ProductsPattern, nil, nil, false, nil)
 		// log.Printf("readMany res: %v\n", res)
 		if err != nil {
 			// check if errRes has error
@@ -83,7 +82,7 @@ func TestProduct(t *testing.T) {
 	})
 
 	t.Run(("readOne"), func(t *testing.T) {
-		resp, errRes, err := httpext.Request[response.Response[user.User], response.ErrorResponse](ctx, httpClient, http.MethodGet, baseURL+constant.V1+constant.UsersPattern+"/"+e.ID, nil, nil, false)
+		resp, errRes, err := httpext.Request[response.Response[product.Product], response.ErrorResponse](ctx, httpClient, http.MethodGet, baseURL+constant.V1+constant.ProductsPattern+"/"+e.ID, nil, nil, false, nil)
 		// log.Printf("readMany res: %v\n", res)
 		if err != nil {
 			// check if errRes has error
@@ -106,7 +105,7 @@ func TestProduct(t *testing.T) {
 			t.Errorf("Unexpected error: %v", err)
 		}
 
-		resp, errRes, err := httpext.Request[response.Response[user.User], response.ErrorResponse](ctx, httpClient, http.MethodPut, baseURL+constant.V1+constant.UsersPattern+"/"+e.ID, nil, bytes.NewReader(b), false)
+		resp, errRes, err := httpext.Request[response.Response[product.Product], response.ErrorResponse](ctx, httpClient, http.MethodPut, baseURL+constant.V1+constant.ProductsPattern+"/"+e.ID, nil, bytes.NewReader(b), false, nil)
 		// log.Printf("readMany res: %v\n", res)
 		if err != nil {
 			// check if errRes has error
@@ -123,7 +122,7 @@ func TestProduct(t *testing.T) {
 	})
 
 	t.Run("delete", func(t *testing.T) {
-		resp, errRes, err := httpext.Request[response.Response[user.User], response.ErrorResponse](ctx, httpClient, http.MethodDelete, baseURL+constant.V1+constant.UsersPattern+"/"+e.ID, nil, nil, false)
+		resp, errRes, err := httpext.Request[response.Response[product.Product], response.ErrorResponse](ctx, httpClient, http.MethodDelete, baseURL+constant.V1+constant.ProductsPattern+"/"+e.ID, nil, nil, false, nil)
 		// log.Printf("readMany res: %v\n", res)
 		if err != nil {
 			// check if errRes has error

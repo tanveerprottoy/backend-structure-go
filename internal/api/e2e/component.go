@@ -2,21 +2,21 @@ package e2e
 
 import (
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/delivery/http/handler"
-	productcfg "github.com/tanveerprottoy/backend-structure-go/internal/api/product/config"
-	usercfg "github.com/tanveerprottoy/backend-structure-go/internal/api/user/config"
+	productprovider "github.com/tanveerprottoy/backend-structure-go/internal/api/product/provider"
+	userprovider "github.com/tanveerprottoy/backend-structure-go/internal/api/user/provider"
 )
 
 // initComponents initializes application components
 func initComponents(cfg *config) {
-	product := productcfg.NewConfig(cfg.db)
+	productProvider := productprovider.New(cfg.db)
 
-	user := usercfg.NewConfig(cfg.db)
+	userProvider := userprovider.New(cfg.db)
 
 	initRoutes(
 		cfg.router,
 		[]any{
-			handler.NewProduct(product.UseCase, cfg.validater),
-			handler.NewUser(user.UseCase, cfg.validater),
+			handler.NewProduct(productProvider.UseCase, cfg.validater),
+			handler.NewUser(userProvider.UseCase, cfg.validater),
 		},
 	)
 }

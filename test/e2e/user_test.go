@@ -49,7 +49,7 @@ func TestUser(t *testing.T) {
 			t.Errorf("Unexpected error: %v", err)
 		}
 
-		u, errRes, err := httpext.Request[response.Response[user.User], response.ErrorResponse](ctx, httpClient, http.MethodPost, baseURL+constant.V1+constant.UsersPattern, nil, bytes.NewReader(b), false)
+		u, errRes, err := httpext.Request[response.Response[user.User], response.ErrorResponse](ctx, httpClient, http.MethodPost, baseURL+constant.V1+constant.UsersPattern, nil, bytes.NewReader(b), false, nil)
 		// log.Printf("create res: %v\n", res)
 		if err != nil {
 			// check if errRes has error
@@ -64,7 +64,7 @@ func TestUser(t *testing.T) {
 	})
 
 	t.Run(("readMany"), func(t *testing.T) {
-		resp, errRes, err := httpext.Request[response.Response[response.ReadManyResponse[user.User]], response.ErrorResponse](ctx, httpClient, http.MethodGet, baseURL+constant.V1+constant.UsersPattern, nil, nil, false)
+		resp, errRes, err := httpext.Request[response.Response[response.ReadManyResponse[user.User]], response.ErrorResponse](ctx, httpClient, http.MethodGet, baseURL+constant.V1+constant.UsersPattern, nil, nil, false, nil)
 		// log.Printf("readMany res: %v\n", res)
 		if err != nil {
 			// check if errRes has error
@@ -81,7 +81,7 @@ func TestUser(t *testing.T) {
 	})
 
 	t.Run(("readOne"), func(t *testing.T) {
-		resp, errRes, err := httpext.Request[response.Response[user.User], response.ErrorResponse](ctx, httpClient, http.MethodGet, baseURL+constant.V1+constant.UsersPattern+"/"+e.ID, nil, nil, false)
+		resp, errRes, err := httpext.Request[response.Response[user.User], response.ErrorResponse](ctx, httpClient, http.MethodGet, baseURL+constant.V1+constant.UsersPattern+"/"+e.ID, nil, nil, false, nil)
 		// log.Printf("readMany res: %v\n", res)
 		if err != nil {
 			// check if errRes has error
@@ -104,7 +104,7 @@ func TestUser(t *testing.T) {
 			t.Errorf("Unexpected error: %v", err)
 		}
 
-		resp, errRes, err := httpext.Request[response.Response[user.User], response.ErrorResponse](ctx, httpClient, http.MethodPut, baseURL+constant.V1+constant.UsersPattern+"/"+e.ID, nil, bytes.NewReader(b), false)
+		resp, errRes, err := httpext.Request[response.Response[user.User], response.ErrorResponse](ctx, httpClient, http.MethodPut, baseURL+constant.V1+constant.UsersPattern+"/"+e.ID, nil, bytes.NewReader(b), false, nil)
 		// log.Printf("readMany res: %v\n", res)
 		if err != nil {
 			// check if errRes has error
@@ -121,7 +121,7 @@ func TestUser(t *testing.T) {
 	})
 
 	t.Run("delete", func(t *testing.T) {
-		resp, errRes, err := httpext.Request[response.Response[user.User], response.ErrorResponse](ctx, httpClient, http.MethodDelete, baseURL+constant.V1+constant.UsersPattern+"/"+e.ID, nil, nil, false)
+		resp, errRes, err := httpext.Request[response.Response[user.User], response.ErrorResponse](ctx, httpClient, http.MethodDelete, baseURL+constant.V1+constant.UsersPattern+"/"+e.ID, nil, nil, false, nil)
 		// log.Printf("readMany res: %v\n", res)
 		if err != nil {
 			// check if errRes has error

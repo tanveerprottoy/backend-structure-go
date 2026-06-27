@@ -1,4 +1,4 @@
-package usercfg
+package provider
 
 import (
 	"database/sql"
@@ -8,15 +8,15 @@ import (
 	"github.com/tanveerprottoy/backend-structure-go/internal/api/user/service"
 )
 
-// Config contains and initializes the components of the user package
-type Config struct {
+// Provider contains and initializes the components of the package
+type Provider struct {
 	UseCase    user.UseCase
 	Repository user.Repository
 }
 
-// NewConfig initializes a new NewConfig
-func NewConfig(db *sql.DB) *Config {
+// New initializes a Provider
+func New(db *sql.DB) Provider {
 	r := postgres.NewStorage(db)
 	u := service.NewService(r)
-	return &Config{UseCase: u, Repository: r}
+	return Provider{UseCase: u, Repository: r}
 }
